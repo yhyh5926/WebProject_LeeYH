@@ -137,8 +137,8 @@ a {
 </style>
 </head>
 <body class="body-bg">
-	<jsp:include page="./Common/Link.jsp" />
-	<h2 class="page-title">자유 게시판</h2>
+	<jsp:include page="../Common/Link.jsp" />
+	<h2 class="page-title">자료 게시판</h2>
 
 	<!-- 검색 폼 -->
 	<form method="get" class="search-form">
@@ -173,13 +173,14 @@ a {
 				<c:forEach items="${ boardLists }" var="row" varStatus="loop">
 					<tr align="center">
 						<td>${ map.totalCount - (((map.pageNum-1) * map.pageSize) + loop.index)}</td>
-						<td align="left"><a href="../board/view.do?idx=${ row.idx }">${ row.title }</a></td>
+						<td align="left"><a
+							href="../mvcboard/view.do?idx=${ row.idx }">${ row.title }</a></td>
 						<td>${ row.name }</td>
 						<td>${ row.visitcount }</td>
 						<td>${ row.postdate }</td>
 						<td><c:if test="${ not empty row.ofile }">
 								<a class="download-link"
-									href="../board/download.do?ofile=${ row.ofile }&sfile=${ row.sfile }&idx=${ row.idx }">[Down]</a>
+									href="../mvcboard/download.do?ofile=${ row.ofile }&sfile=${ row.sfile }&idx=${ row.idx }">[Down]</a>
 							</c:if></td>
 					</tr>
 				</c:forEach>
