@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import utils.JSFunction;
 
-@WebServlet("/board/write.do")
+@WebServlet("/board/Write.do")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, // 임시 파일 크기 (1MB)
 		maxFileSize = 1024 * 1024 * 10, // 최대 크기 (10MB)
 		maxRequestSize = 1024 * 1024 * 50 // 전체 크기 (50MB)
@@ -45,7 +45,7 @@ public class WriteController extends HttpServlet {
 		// 로그인 확인
 		HttpSession session = req.getSession();
 		String userId = (String) session.getAttribute("userId");
-
+		String userName = (String) session.getAttribute("userName");
 		/*
 		 * session 영역에 회원인증에 관련된 속성이 없다면 로그아웃 상태이므로 로그인 페이지로 이동
 		 */
@@ -72,7 +72,7 @@ public class WriteController extends HttpServlet {
 		// 폼값을 DTO에 저장
 		BoardDTO dto = new BoardDTO();
 		dto.setId(userId);
-		dto.setName(req.getParameter("name"));
+		dto.setName(userName);
 		dto.setTitle(req.getParameter("title"));
 		dto.setContent(req.getParameter("content"));
 		dto.setCategory(req.getParameter("category"));
@@ -91,10 +91,11 @@ public class WriteController extends HttpServlet {
 		dao.close();
 
 		// 성공 or 실패?
+		String url = req.getContextPath() + "/board/Board.do?category=" + req.getParameter("category");
 		if (result == 1) { // 글쓰기 성공
-			resp.sendRedirect("../board/list.do");
+			resp.sendRedirect(url);
 		} else { // 글쓰기 실패
-			JSFunction.alertLocation(resp, "글쓰기에 실패했습니다.", "../board/write.do");
+			JSFunction.alertLocation(resp, "글쓰기에 실패했습니다.", "/board/write.do");
 		}
 	}
 

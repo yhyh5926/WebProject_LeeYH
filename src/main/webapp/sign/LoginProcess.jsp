@@ -18,7 +18,7 @@ dao.close();
 if (memberDTO.getId() != null) {
 	session.setAttribute("userId", memberDTO.getId());
 	session.setAttribute("userName", memberDTO.getName());
-	response.sendRedirect(request.getContextPath() + "/index.jsp");
+	response.sendRedirect(request.getContextPath() + "/board/Board.do");
 } else {
 	request.setAttribute("LoginErrMsg", "로그인 오류입니다.");
 	request.getRequestDispatcher("LoginForm.jsp").forward(request, response);

@@ -72,61 +72,131 @@
 	box-sizing: border-box;
 }
 
-.category {
-	padding: 8px;
-	border: 1px solid yellowgreen;
-	border-radius: 5px;
+body {
+	background-color: #f0f4f8;
+	color: #333;
+	font-family: 'Arial', sans-serif;
 }
 
+/* 페이지 제목 */
 .write-title {
-	color: yellowgreen;
 	text-align: center;
-	margin: 20px 0;
+	color: mediumseagreen;
+	font-size: 28px;
+	font-weight: bold;
+	padding: 20px 0;
 }
 
+/* 글쓰기 폼 */
 .write-form {
-	width: 90%;
+	max-width: 900px;
 	margin: 20px auto;
-	border: 2px solid yellowgreen;
-	border-radius: 8px;
-	padding: 15px;
+	padding: 20px;
+	background-color: white;
+	border-radius: 10px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* 테이블 스타일 */
 .write-table {
 	width: 100%;
 	border-collapse: collapse;
+	margin-bottom: 20px;
 }
 
 .write-table td {
-	padding: 10px;
-	border: 1px solid #ccc;
+	padding: 12px 10px;
+	vertical-align: middle;
 }
 
-.write-table input[type="text"], .write-table textarea, .write-table input[type="file"]
-	{
-	width: 95%;
-	padding: 8px;
-	border: 1px solid yellowgreen;
+.write-table td:first-child {
+	width: 150px;
+	font-weight: bold;
+	color: #555;
+}
+
+/* 입력 필드, 텍스트 영역, 셀렉트 */
+.write-table input[type="text"], .write-table select, .write-table textarea,
+	.write-table input[type="file"] {
+	width: 100%;
+	padding: 8px 10px;
+	border: 1px solid mediumseagreen;
+	border-radius: 5px;
+	font-size: 14px;
+	outline: none;
+	transition: all 0.2s ease-in-out;
+}
+
+.write-table input[type="text"]:focus, .write-table textarea:focus,
+	.write-table select:focus {
+	border-color: seagreen;
+	box-shadow: 0 0 5px rgba(46, 139, 87, 0.2); /* mediumseagreen 계열 그림자 */
+}
+
+.write-table textarea {
+	min-height: 120px;
+	resize: vertical;
+}
+
+/* 첨부파일 미리보기 */
+#preview {
+	display: block;
+	max-width: 200px;
+	margin-top: 10px;
+	border: 1px solid #ddd;
 	border-radius: 5px;
 }
 
+/* 버튼 영역 */
 .write-buttons {
 	text-align: center;
-	margin-top: 15px;
+	margin-top: 10px;
 }
 
 .write-buttons button {
-	background-color: yellowgreen;
-	color: white;
-	padding: 8px 15px;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
+	padding: 8px 16px;
 	margin: 0 5px;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: 14px;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
 }
 
-.write-buttons button:hover {
-	background-color: green;
+/* 작성 완료 버튼 */
+.write-buttons button[type="submit"] {
+	background-color: mediumseagreen;
+	color: white;
+	border: 1px solid mediumseagreen;
+}
+
+.write-buttons button[type="submit"]:hover {
+	background-color: seagreen;
+	border-color: seagreen;
+}
+
+/* 리셋 버튼 */
+.write-buttons button[type="reset"] {
+	background-color: coral;
+	color: white;
+	border: 1px solid coral;
+}
+
+.write-buttons button[type="reset"]:hover {
+	background-color: orangered;
+	border-color: orangered;
+}
+
+/* 목록 바로가기 버튼 */
+.write-buttons button[type="button"] {
+	background-color: steelblue;
+	color: white;
+	border: 1px solid steelblue;
+}
+
+.write-buttons button[type="button"]:hover {
+	background-color: dodgerblue;
+	border-color: dodgerblue;
 }
 </style>
 </head>
@@ -135,7 +205,7 @@
 	<h2 class="write-title">파일 첨부형 게시판 - 글쓰기(Write)</h2>
 
 	<form name="writeFrm" method="post" enctype="multipart/form-data"
-		action="../board/write.do" onsubmit="return validateForm(this);"
+		action="./Write.do?" onsubmit="return validateForm(this);"
 		class="write-form">
 		<table class="write-table">
 			<tr>
@@ -167,9 +237,7 @@
 		<div class="write-buttons">
 			<button type="submit">작성 완료</button>
 			<button type="reset">RESET</button>
-			<button type="button"
-				onclick="location.href='/WebProject_LeeYH/index.jsp';">목록
-				바로가기</button>
+			<button type="button" onclick="history.back();">목록 바로가기</button>
 		</div>
 	</form>
 </body>

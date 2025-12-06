@@ -7,20 +7,26 @@ import java.util.Map;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.BoardPage;
 
-
+@WebServlet("/board/Board.do")
 public class ListPageController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		BoardDAO dao = new BoardDAO();
-
 		Map<String, Object> map = new HashMap<String, Object>();
+
+		String category = req.getParameter("category");
+		if (category == null || category.isEmpty()) {
+			category = "free";
+		}
+		map.put("category", category);
 
 		String searchField = req.getParameter("searchField");
 		String searchWord = req.getParameter("searchWord");
@@ -49,7 +55,9 @@ public class ListPageController extends HttpServlet {
 		List<BoardDTO> boardLists = dao.selectListPage(map);
 		dao.close();
 
-		String pagingImg = BoardPage.pagingStr(totalCount, pageSize, blockPage, pageNum, "../board/listPage.do");
+		String baseUrl = "/board/Board.do?category=" + category;
+		String pagingImg = BoardPage.pagingStr(totalCount, pageSize, blockPage, pageNum,
+				req.getContextPath() + baseUrl);
 		map.put("pagingImg", pagingImg);
 		map.put("totalCount", totalCount);
 		map.put("pageSize", pageSize);
@@ -57,6 +65,22 @@ public class ListPageController extends HttpServlet {
 
 		req.setAttribute("boardLists", boardLists);
 		req.setAttribute("map", map);
-		req.getRequestDispatcher("/index.jsp").forward(req, resp);
+
+		String jspPage;
+		switch (category) {
+		case "qna":
+			jspPage = "/board/QnABoard.jsp";
+			break;
+		case "data":
+			jspPage = "/board/DataBoard.jsp";
+			break;
+		case "free":
+		default:
+			jspPage = "/board/FreeBoard.jsp";
+			break;
+		}
+
+		req.getRequestDispatcher(jspPage).forward(req, resp);
+
 	}
 }

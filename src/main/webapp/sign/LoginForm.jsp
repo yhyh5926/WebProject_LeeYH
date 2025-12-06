@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>WebProject_LeeYH</title>
+<title>WebProject_LeeYH - 로그인</title>
 
 <style>
 * {
@@ -13,93 +13,147 @@
 	box-sizing: border-box;
 }
 
+.container {
+	max-width: 400px;
+	margin: 100px auto;
+	background-color: white;
+	border: 2px solid mediumseagreen;
+	border-radius: 12px;
+	padding: 30px 25px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+	background-color: white;
+}
+
 h2 {
 	text-align: center;
+	color: mediumseagreen;
+	margin-bottom: 20px;
+	font-size: 28px;
+	font-weight: bold;
 }
 
+.error-msg {
+	color: red;
+	text-align: center;
+	margin-bottom: 15px;
+	font-size: 1em;
+}
+
+/* 로그인 폼 */
 .login-form {
-	margin: 0 auto;
 	display: flex;
-	max-width: 300px;
 	flex-direction: column;
-	align-items: center;
-	border-radius: 20px;
-	padding: 30px;
-	background-color: yellowgreen;
-	border-radius: 20px;
-	max-width: 300px;
-	border-radius: 20px;
-	display: flex;
+	gap: 15px;
 }
 
-span {
-	display: inline-block;
-	width: 200px;
-	color: white;
-	width: 70px;
+.login-form .input-group {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.login-form label {
+	font-weight: bold;
+	color: mediumseagreen;
+}
+
+.login-form input[type="text"], .login-form input[type="password"] {
+	padding: 10px 12px;
+	border: 1px solid mediumseagreen;
+	border-radius: 6px;
+	font-size: 14px;
+	transition: border 0.2s ease;
+}
+
+.login-form input[type="text"]:focus, .login-form input[type="password"]:focus
+	{
+	border-color: seagreen;
+	outline: none;
 }
 
 .login-btn {
-	margin-top: 30px;
-	background-color: skyblue;
-	border-radius: 10px;
-	padding: 5px 15px;
-	font-weight: bold;
+	padding: 10px 20px;
+	background-color: mediumseagreen;
+	border: 1px solid mediumseagreen;
+	border-radius: 6px;
 	color: white;
-	background-color: skyblue;
+	font-weight: bold;
 	cursor: pointer;
+	font-size: 16px;
+	transition: all 0.2s ease-in-out;
 }
 
 .login-btn:hover {
-	background-color: blue;
+	background-color: seagreen;
+	border-color: seagreen;
+}
+
+.extra-actions {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 10px;
+}
+
+.extra-actions button {
+	padding: 8px 14px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	background-color: #eee;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.extra-actions button:hover {
+	background-color: #ddd;
 }
 </style>
 </head>
 <body>
-	<!-- 
-JSP에서 인클루드는 2가지 방식이 있다.
-1. include 지시어를 이용한 방법
-2. 액션 태그를 사용하는 방법
- -->
 	<jsp:include page="../Common/Link.jsp" />
-	<h2>로그인 페이지</h2>
+	<div class="container">
+		<h2>로그인 페이지</h2>
 
-	<!-- 로그인을 위해 폼값을 전송한 후 만약 조건에 맞는 회원정보가 없다면 
-	request 영역에 에러 메시지를 저장한 후 현재 페이지로 forward 할 것이다.
-	request 영역은 forward된 페이지까지는 데이터를 공유하므로 아래 메시지를 출력할 수 있다.
-	 -->
-	<span style="color: red; font-size: 1.2em"> <%=request.getAttribute("LoginErrMsg") == null ? "" : request.getAttribute("LoginErrMsg")%>
-	</span>
-	<%
-	if (session.getAttribute("UserId") == null) {
-		//로그아웃 상태
-	%>
-	<script>
-		function validateForm(form) {
-			if (!form.user_id.value) {
-				alert("아이디를 입력하세요.");
-				return false;
+		<span class="error-msg"> <%=request.getAttribute("LoginErrMsg") == null ? "" : request.getAttribute("LoginErrMsg")%>
+		</span>
+
+		<%
+		if (session.getAttribute("UserId") == null) {
+		%>
+		<script>
+			function validateForm(form) {
+				if (!form.userId.value) {
+					alert("아이디를 입력하세요.");
+					form.userId.focus();
+					return false;
+				}
+				if (!form.userPwd.value) {
+					alert("패스워드를 입력하세요");
+					form.userPwd.focus();
+					return false;
+				}
 			}
-			if (form.user_pw.value == "") {
-				alert("패스워드를 입력하세요")
-				return false;
-			}
+		</script>
+
+		<form class="login-form" action="./LoginProcess.jsp" method="post"
+			name="loginFrm" onsubmit="return validateForm(this)">
+			<div class="input-group">
+				<label for="userId">아이디</label> <input type="text" name="userId"
+					id="userId" />
+			</div>
+			<div class="input-group">
+				<label for="userPwd">패스워드</label> <input type="password"
+					name="userPwd" id="userPwd" />
+			</div>
+			<input type="submit" class="login-btn" value="로그인하기" />
+
+			<div class="extra-actions">
+				<button type="button" onclick="history.back()">뒤로가기</button>
+				<button type="button" onclick="location.href='./SignupForm.jsp'">회원가입</button>
+			</div>
+		</form>
+		<%
 		}
-	</script>
-
-	<form class="login-form" action="LoginProcess.jsp" method="post"
-		name="loginFrm" onsubmit="return validateForm(this)">
-		<div>
-			<span>아이디</span><input type="text" name="userId" />
-		</div>
-		<div>
-			<span>패스워드</span><input type="password" name="userPwd" />
-		</div>
-		<input class="login-btn" type="submit" value="로그인하기" /><br />
-	</form>
-
-	<%
-	}
-	%>
+		%>
+	</div>
 </body>
 </html>

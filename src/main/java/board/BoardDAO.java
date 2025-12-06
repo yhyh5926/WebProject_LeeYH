@@ -14,19 +14,30 @@ public class BoardDAO extends DBConnPool {
 
 	public int selectCount(Map<String, Object> map) {
 		int totalCount = 0;
-		String query = "SELECT COUNT(*) FROM board";
+		String query = "SELECT COUNT(*) FROM board WHERE category = ?";
+
+		// 검색어가 있으면 AND로 추가
 		if (map.get("searchWord") != null) {
-			query += " WHERE " + map.get("searchField") + " " + " LIKE '%" + map.get("searchWord") + "%'";
+			query += " AND " + map.get("searchField") + " LIKE ?";
 		}
+
 		try {
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(query);
-			rs.next();
-			totalCount = rs.getInt(1);
+			psmt = con.prepareStatement(query);
+
+			psmt.setString(1, (String) map.get("category"));
+			if (map.get("searchWord") != null) {
+				psmt.setString(2, "%" + map.get("searchWord") + "%");
+			}
+
+			rs = psmt.executeQuery();
+			if (rs.next()) {
+				totalCount = rs.getInt(1);
+			}
 		} catch (Exception e) {
 			System.out.println("게시물 카운트 중 예외 발생");
 			e.printStackTrace();
 		}
+
 		return totalCount;
 	}
 
@@ -71,7 +82,8 @@ public class BoardDAO extends DBConnPool {
 				dto.setVisitCount(rs.getInt(6));
 				dto.setOfile(rs.getString(7));
 				dto.setSfile(rs.getString(8));
-				dto.setName(rs.getString(9));
+				dto.setCategory(rs.getString(9));
+				dto.setName(rs.getString(10));
 			}
 		} catch (Exception e) {
 			System.err.println("게시물 상세보기 중 예외 발생");
@@ -131,36 +143,51 @@ public class BoardDAO extends DBConnPool {
 
 	public List<BoardDTO> selectListPage(Map<String, Object> map) {
 		List<BoardDTO> board = new Vector<BoardDTO>();
-		String query = " " + "SELECT * FROM ( " + "    SELECT Tb.*, ROWNUM rNum FROM ( "
-				+ "        SELECT * FROM board ";
 
+		String query = "SELECT * FROM ( " + "    SELECT Tb.*, ROWNUM rNum FROM ( "
+				+ "        SELECT b.*, m.name FROM board b " + "        JOIN member m ON b.id = m.id ";
+
+		// category 조건 추가
+		query += " WHERE b.category = ? ";
+
+		// 검색 조건 추가
 		if (map.get("searchWord") != null) {
-			query += " WHERE " + map.get("searchField") + " LIKE '%" + map.get("searchWord") + "%' ";
+			query += " AND " + map.get("searchField") + " LIKE ? ";
 		}
 
-		query += "        ORDER BY pnum DESC " + "    ) Tb " + " ) " + " WHERE rNum BETWEEN ? AND ?";
+		query += "        ORDER BY b.pnum DESC " + "    ) Tb " + ") " + "WHERE rNum BETWEEN ? AND ?";
 
 		try {
-			/*
-			 * 서블릿에서 현재 페이지번호를 이용해서 계산한 구간의 값을 쿼리문으 ㅣ인파라미터로 설정. 1페이지인 경우 1~10까지로 지정
-			 */
 			psmt = con.prepareStatement(query);
-			psmt.setString(1, map.get("start").toString());
-			psmt.setString(2, map.get("end").toString());
+
+			int idx = 1;
+			// 1) category
+			psmt.setString(idx++, (String) map.get("category"));
+
+			// 2) searchWord
+			if (map.get("searchWord") != null) {
+				psmt.setString(idx++, "%" + map.get("searchWord") + "%");
+			}
+
+			// 3) start, end
+			psmt.setInt(idx++, Integer.parseInt(map.get("start").toString()));
+			psmt.setInt(idx++, Integer.parseInt(map.get("end").toString()));
+
 			rs = psmt.executeQuery();
 
 			while (rs.next()) {
 				BoardDTO dto = new BoardDTO();
 
-				dto.setpNum(rs.getString(1));
-				dto.setId(rs.getString(2));
-				dto.setTitle(rs.getString(3));
-				dto.setContent(rs.getString(4));
-				dto.setPostDate(rs.getDate(5));
-				dto.setVisitCount(rs.getInt(6));
-				dto.setOfile(rs.getString(7));
-				dto.setSfile(rs.getString(8));
-				dto.setCategory(rs.getString(9));
+				dto.setpNum(rs.getString("pNum"));
+				dto.setId(rs.getString("id"));
+				dto.setTitle(rs.getString("title"));
+				dto.setContent(rs.getString("content"));
+				dto.setPostDate(rs.getDate("postDate"));
+				dto.setVisitCount(rs.getInt("visitCount"));
+				dto.setOfile(rs.getString("ofile"));
+				dto.setSfile(rs.getString("sfile"));
+				dto.setCategory(rs.getString("category"));
+				dto.setName(rs.getString("name")); // member 테이블의 name
 
 				board.add(dto);
 			}
@@ -168,6 +195,7 @@ public class BoardDAO extends DBConnPool {
 			System.out.println("게시물 조회 중 예외 발생");
 			e.printStackTrace();
 		}
+
 		return board;
 	}
 

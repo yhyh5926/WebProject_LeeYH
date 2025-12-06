@@ -18,13 +18,13 @@ public class JDBConnect {
 		try {
 			Class.forName(driver);
 			con = DriverManager.getConnection(url, id, pwd);
-			System.out.println("DB 연결 성공(인수 생성자1)");
+			System.out.println("DB 연결 성공(4개 인수 받음)");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	// application 내장객체를 매개변수로 선언
+	/* application 내장객체를 매개변수로 선언
 	public JDBConnect(ServletContext application) {
 		// JSP에서 전달해준 내장객체를 받아서 사용
 		try {
@@ -39,6 +39,7 @@ public class JDBConnect {
 			e.printStackTrace();
 		}
 	}
+	*/
 
 	public void close() {
 		try {

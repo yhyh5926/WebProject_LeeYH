@@ -16,7 +16,7 @@ String category = request.getParameter("category") == null ? "free" : request.ge
 <body class="category-<%=category%>">
 	<jsp:include page="../Common/Link.jsp" />
 
-	<h2 class="page-title">자료 게시판</h2>
+	<h2 class="page-title">자유 게시판</h2>
 
 	<!-- 검색 폼 -->
 	<form method="get" class="search-form">
