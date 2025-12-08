@@ -26,6 +26,7 @@ public class DBConnPool {
 			//이를 통해 DB에 연결, 즉 커넥션 객체를 가져다가 사용한다
 			con = source.getConnection();
 			System.out.println("DB 커넥션 풀 연결 성공");
+			
 		} catch (Exception e) {
 			System.out.println("DB 커넥션 풀 연결 실패");
 			e.printStackTrace();

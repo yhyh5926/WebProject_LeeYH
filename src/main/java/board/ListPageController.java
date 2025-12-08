@@ -30,6 +30,7 @@ public class ListPageController extends HttpServlet {
 
 		String searchField = req.getParameter("searchField");
 		String searchWord = req.getParameter("searchWord");
+
 		if (searchWord != null) {
 			map.put("searchField", searchField);
 			map.put("searchWord", searchWord);
@@ -53,6 +54,16 @@ public class ListPageController extends HttpServlet {
 		/* 페이지 처리 end */
 
 		List<BoardDTO> boardLists = dao.selectListPage(map);
+
+		// 로그인한 사용자가 좋아요 했는지 여부
+		String userId = (String) req.getSession().getAttribute("userId");
+		if (userId != null) {
+			for (BoardDTO dto : boardLists) {
+				boolean liked = dao.hasFavorite(dto.getpNum(), userId);
+				dto.setLikedByUser(liked);
+			}
+		}
+
 		dao.close();
 
 		String baseUrl = "/board/Board.do?category=" + category;

@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import utils.JSFunction;
 
-@WebServlet("/mvcboard/delete.do")
+@WebServlet("/board/Delete.do")
 public class DeleteController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -20,7 +20,6 @@ public class DeleteController extends HttpServlet {
 
 		// 로그인 확인
 		HttpSession session = req.getSession();
-
 		String userId = (String) session.getAttribute("userId");
 
 		if (userId == null) {
@@ -41,12 +40,14 @@ public class DeleteController extends HttpServlet {
 
 		// 게시물 삭제
 		int result = dao.deletePost(pNum);
+
 		dao.close();
 		if (result == 1) {
 			String saveFileName = dto.getSfile();
 			FileUtil.deleteFile(req, "/Uploads", saveFileName);
 		}
-		JSFunction.alertLocation(resp, "삭제되었습니다.", "../mvcboard/list.do");
+		String url = req.getContextPath() + "/board/Board.do?category=" + req.getParameter("category");
+		JSFunction.alertLocation(resp, "삭제되었습니다.", url);
 	}
 
 }

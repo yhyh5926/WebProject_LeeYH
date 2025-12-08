@@ -91,9 +91,10 @@ public class WriteController extends HttpServlet {
 		dao.close();
 
 		// 성공 or 실패?
-		String url = req.getContextPath() + "/board/Board.do?category=" + req.getParameter("category");
+
 		if (result == 1) { // 글쓰기 성공
-			resp.sendRedirect(url);
+			String url = req.getContextPath() + "/board/Board.do?category=" + req.getParameter("category");
+			JSFunction.alertLocation(resp, "작성 완료", url);
 		} else { // 글쓰기 실패
 			JSFunction.alertLocation(resp, "글쓰기에 실패했습니다.", "/board/write.do");
 		}

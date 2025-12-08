@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import utils.JSFunction;
 
-@WebServlet("/board/edit.do")
+@WebServlet("/board/Edit.do")
 @MultipartConfig(maxFileSize = 1024 * 1024 * 10, maxRequestSize = 1024 * 1024 * 100)
 
 public class EditController extends HttpServlet {
@@ -22,11 +22,10 @@ public class EditController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
-
 		String userId = (String) session.getAttribute("userId");
 
 		if (userId == null) {
-			JSFunction.alertLocation(resp, "로그인 후 이용해주세요", "../06Session/LoginForm.jsp");
+			JSFunction.alertLocation(resp, "로그인 후 이용해주세요", "../sign/LoginForm.jsp");
 			return;
 		}
 
@@ -42,7 +41,7 @@ public class EditController extends HttpServlet {
 		}
 
 		req.setAttribute("dto", dto);
-		req.getRequestDispatcher("/14Board/Edit.jsp").forward(req, resp);
+		req.getRequestDispatcher("/board/Edit.jsp").forward(req, resp);
 
 	}
 
@@ -56,7 +55,7 @@ public class EditController extends HttpServlet {
 		 * session 영역에 회원인증에 관련된 속성이 없다면 로그아웃 상태이므로 로그인 페이지로 이동
 		 */
 		if (userId == null) {
-			JSFunction.alertLocation(resp, "로그인 후 이용해주세요.", "../06Session/LoginForm.jsp");
+			JSFunction.alertLocation(resp, "로그인 후 이용해주세요.", "../sign/LoginForm.jsp");
 			return;
 		}
 
@@ -115,10 +114,13 @@ public class EditController extends HttpServlet {
 		dao.close();
 
 		// 성공 or 실패?
+
 		if (result == 1) { // 수정 성공
-			resp.sendRedirect("../board/view.do?pNum=" + pNum);
+			String url = req.getContextPath() + "/board/Board.do?category=" + req.getParameter("category");
+			JSFunction.alertLocation(resp, "수정이 완료되었습니다.", url + "&pNum=" + pNum);
 		} else { // 수정 실패
-			JSFunction.alertLocation(resp, "수정에 실패했습니다.", "../board/view.do?pNum=" + pNum);
+			String url = req.getContextPath() + "/board/View.do?category=" + req.getParameter("category");
+			JSFunction.alertLocation(resp, "수정에 실패했습니다.", url + "&pNum=" + pNum);
 		}
 	}
 

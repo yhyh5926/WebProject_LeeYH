@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%
+String category = request.getParameter("category") == null ? "free" : request.getParameter("category");
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -85,6 +88,18 @@ body {
 	font-size: 28px;
 	font-weight: bold;
 	padding: 20px 0;
+}
+
+.write-title.free {
+	color: #2ca273;
+}
+
+.write-title.qna {
+	color: #1e3a8a;
+}
+
+.write-title.data {
+	color: #7c3aed;
 }
 
 /* 글쓰기 폼 */
@@ -202,7 +217,7 @@ body {
 </head>
 <body>
 	<jsp:include page="../Common/Link.jsp" />
-	<h2 class="write-title">파일 첨부형 게시판 - 글쓰기(Write)</h2>
+	<h2 class="write-title <%=category%>">글쓰기(Write)</h2>
 
 	<form name="writeFrm" method="post" enctype="multipart/form-data"
 		action="./Write.do?" onsubmit="return validateForm(this);"
@@ -212,10 +227,12 @@ body {
 				<td>카테고리</td>
 				<td><select class="category" name="category"
 					onchange="toggleFileInput()">
-						<option value="free">자유게시판</option>
-						<option value="qna">QnA게시판</option>
-						<option value="data">자료게시판</option>
-				</select></td>
+						<option value="free"
+							<%="free".equals(category) ? "selected" : ""%>>자유게시판</option>
+						<option value="qna" <%="qna".equals(category) ? "selected" : ""%>>QnA게시판</option>
+						<option value="data"
+							<%="data".equals(category) ? "selected" : ""%>>자료게시판</option>
+				</select> </select></td>
 
 			</tr>
 			<tr>
@@ -237,7 +254,9 @@ body {
 		<div class="write-buttons">
 			<button type="submit">작성 완료</button>
 			<button type="reset">RESET</button>
-			<button type="button" onclick="history.back();">목록 바로가기</button>
+			<button type="button"
+				onclick="location.href='./Board.do?category=<%=category%>'">목록
+				바로가기</button>
 		</div>
 	</form>
 </body>

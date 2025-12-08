@@ -1,11 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%
+String category = request.getParameter("category") == null ? "free" : request.getParameter("category");
+%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>WebProject_LeeYH</title>
+<title>WebProject_LeeYH - 수정하기(Edit)</title>
 
 <script type="text/javascript">
 	function validateForm(form) {
@@ -21,129 +24,200 @@
 		}
 	}
 
-	// 이미지 미리보기 기능
 	window.onload = function() {
 		const fileInput = document.getElementById("ofile");
 		const preview = document.getElementById("preview");
 
-		fileInput.addEventListener("change", function() {
-			const file = this.files[0];
-			if (file) {
-				const reader = new FileReader();
-				reader.onload = function(e) {
-					preview.src = e.target.result;
-					preview.style.display = "block";
+		if (fileInput) {
+			fileInput.addEventListener("change", function() {
+				const file = this.files[0];
+				if (!file) {
+					preview.src = "";
+					preview.style.display = "none";
+					return;
 				}
-				reader.readAsDataURL(file);
-			} else {
-				preview.src = "";
-				preview.style.display = "none";
-			}
-		});
+				const ext = file.name.substring(file.name.lastIndexOf(".") + 1)
+						.toLowerCase();
+				const imgExts = [ "png", "jpg", "jpeg", "gif", "bmp" ];
+				if (imgExts.includes(ext)) {
+					const reader = new FileReader();
+					reader.onload = function(e) {
+						preview.src = e.target.result;
+						preview.style.display = "block";
+					}
+					reader.readAsDataURL(file);
+				} else {
+					preview.src = "";
+					preview.style.display = "none";
+				}
+			});
+		}
+	}
+
+	function toggleFileInput() {
+		const category = document.querySelector(".category").value;
+		const fileRow = document.querySelector(".file-row");
+		if (category === "data") {
+			fileRow.style.display = "table-row";
+		} else {
+			fileRow.style.display = "none";
+		}
 	}
 </script>
+
 <style>
+/* 기존 스타일 그대로 사용 */
 * {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
 }
 
-.edit-title {
-	color: orange;
+body {
+	background-color: #f0f4f8;
+	color: #333;
+	font-family: 'Arial', sans-serif;
+}
+
+.write-title {
 	text-align: center;
-	margin: 20px 0;
+	color: mediumseagreen;
+	font-size: 28px;
+	font-weight: bold;
+	padding: 20px 0;
 }
 
-.edit-form {
-	width: 90%;
+.write-form {
+	max-width: 900px;
 	margin: 20px auto;
-	border: 2px solid orange;
-	border-radius: 8px;
-	padding: 15px;
+	padding: 20px;
+	background: #fff;
+	border-radius: 10px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.edit-table {
+.write-table {
 	width: 100%;
 	border-collapse: collapse;
+	margin-bottom: 20px;
 }
 
-.edit-table td {
-	padding: 10px;
-	border: 1px solid #ccc;
+.write-table td {
+	padding: 12px 10px;
+	vertical-align: middle;
 }
 
-.edit-table input[type="text"], .edit-table textarea, .edit-table input[type="file"]
-	{
-	width: 95%;
-	padding: 8px;
-	border: 1px solid orange;
+.write-table td:first-child {
+	width: 150px;
+	font-weight: bold;
+	color: #555;
+}
+
+.write-table input[type="text"], .write-table select, .write-table textarea,
+	.write-table input[type="file"] {
+	width: 100%;
+	padding: 8px 10px;
+	border: 1px solid mediumseagreen;
+	border-radius: 5px;
+	font-size: 14px;
+	outline: none;
+}
+
+.write-table textarea {
+	min-height: 120px;
+	resize: vertical;
+}
+
+#preview {
+	display: block;
+	max-width: 200px;
+	margin-top: 10px;
+	border: 1px solid #ddd;
 	border-radius: 5px;
 }
 
-.edit-buttons {
+.write-buttons {
 	text-align: center;
-	margin-top: 15px;
+	margin-top: 10px;
 }
 
-.edit-buttons button {
-	background-color: orange;
-	color: white;
-	padding: 8px 15px;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
+.write-buttons button {
+	padding: 8px 16px;
 	margin: 0 5px;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: 14px;
+	cursor: pointer;
 }
 
-.edit-buttons button:hover {
-	background-color: darkorange;
+.write-buttons button[type="submit"] {
+	background: mediumseagreen;
+	color: #fff;
+	border: 1px solid mediumseagreen;
+}
+
+.write-buttons button[type="reset"] {
+	background: coral;
+	color: #fff;
+	border: 1px solid coral;
+}
+
+.write-buttons button[type="button"] {
+	background: steelblue;
+	color: #fff;
+	border: 1px solid steelblue;
 }
 </style>
 </head>
 <body>
 	<jsp:include page="../Common/Link.jsp" />
-	<h2 class="edit-title">파일 첨부형 게시판 - 수정하기(Edit)</h2>
+	<h2 class="write-title">게시글 수정(Edit)</h2>
 
 	<form name="editFrm" method="post" enctype="multipart/form-data"
-		action="../mvcboard/edit.do" onsubmit="return validateForm(this);"
-		class="edit-form">
-
-		<!-- 수정할 게시물의 일련번호 설정 -->
-		<input type="hid den" name="idx" value="${ dto.idx }" />
-		<!-- 게시물 작성자의 ID 설정 -->
-		<input type="hid den" name="id" value="${ dto.id }" />
-		<!-- 기존에 등록한 파일명(새로운 파일을 첨부하지 않는 경우 사용) -->
-		<input type="hid den" name="prevOfile" value="${ dto.ofile }" /> <input
-			type="hid den" name="prevSfile" value="${ dto.sfile }" />
-		<!-- 이와 같이 hidden 타입의 입력상자는 웹브라우저에서는 표시되지 않아야 하지만
-		서버로 전송은 되어야하는 값을 설정할 때 사용 -->
-
-		<table class="edit-table">
+		action="./Edit.do" onsubmit="return validateForm(this);"
+		class="write-form">
+		<input type="hidden" name="pNum" value="${dto.pNum}" /> <input
+			type="hidden" name="id" value="${dto.id}" />
+		<table class="write-table">
+			<tr>
+				<td>카테고리</td>
+				<td><select class="category" name="category"
+					onchange="toggleFileInput()">
+						<option value="free" ${dto.category eq 'free' ? 'selected' : ''}>자유게시판</option>
+						<option value="qna" ${dto.category eq 'qna' ? 'selected' : ''}>QnA게시판</option>
+						<option value="data" ${dto.category eq 'data' ? 'selected' : ''}>자료게시판</option>
+				</select></td>
+			</tr>
 			<tr>
 				<td>제목</td>
-				<td><input type="text" name="title" value="${ dto.title }" /></td>
+				<td><input type="text" name="title" value="${dto.title}" /></td>
 			</tr>
 			<tr>
 				<td>내용</td>
-				<td><textarea name="content">${ dto.content }</textarea></td>
+				<td><textarea name="content">${dto.content}</textarea></td>
 			</tr>
-			<tr>
+			<tr class="file-row"
+				style="${dto.category eq 'data' ? '' : 'display:none'}">
 				<td>첨부 파일</td>
-				<td><input type="file" name="ofile" id="ofile" /> <br> <img
-					id="preview" src="" alt="이미지 미리보기"
-					style="max-width: 200px; margin-top: 10px; display: none; border: 1px solid #ccc;" />
-				</td>
+				<td><input type="file" name="ofile" id="ofile" accept="image/*" />
+					<c:if test="${not empty dto.ofile}">
+						<p>현재 첨부: ${dto.ofile}</p>
+						<img id="preview" src="../Uploads/${dto.sfile}" alt="첨부 이미지"
+							style="max-width: 200px; margin-top: 10px;" />
+					</c:if> <c:if test="${empty dto.ofile}">
+						<img id="preview" src="" alt="이미지 미리보기"
+							style="max-width: 200px; margin-top: 10px; display: none;" />
+					</c:if></td>
 			</tr>
 		</table>
 
-		<div class="edit-buttons">
+		<div class="write-buttons">
 			<button type="submit">수정 완료</button>
 			<button type="reset">RESET</button>
-			<button type="button" onclick="location.href='../mvcboard/list.do';">목록
+			<button type="button"
+				onclick="location.href='./Board.do?category=<%=category%>'">목록
 				바로가기</button>
 		</div>
 	</form>
 </body>
 </html>
-

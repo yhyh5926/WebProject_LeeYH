@@ -6,6 +6,7 @@ import java.util.List;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -46,8 +47,35 @@ public class ViewController extends HttpServlet {
 			return;
 		}
 
-		dao.updateVisitCount(pNum); // 조회수 1 증가
+		// 쿠키 확인
+		boolean visited = false;
+		Cookie[] cookies = req.getCookies();
+		if (cookies != null) {
+			for (Cookie c : cookies) {
+				if (c.getName().equals("visited_" + pNum)) {
+					visited = true;
+					break;
+				}
+			}
+		}
+
+		// 하루에 한 번만 조회수 증가
+		if (!visited) {
+			dao.updateVisitCount(pNum);
+
+			Cookie visitCookie = new Cookie("visited_" + pNum, "true");
+			visitCookie.setMaxAge(24 * 60 * 60); // 1일 유지
+			resp.addCookie(visitCookie);
+		}
+
 		BoardDTO dto = dao.selectView(pNum);
+		// 로그인한 사용자가 좋아요 했는지 여부
+		String userId = (String) req.getSession().getAttribute("userId");
+		if (userId != null) {
+			boolean liked = dao.hasFavorite(dto.getpNum(), userId);
+			dto.setLikedByUser(liked);
+		}
+		
 		dao.close();
 
 		// 줄바꿈 처리

@@ -29,6 +29,7 @@ body.category-data {
 	--color-write-btn: #ef4444; /* 레드 계열 */
 }
 
+
 /* a 태그 */
 a {
 	text-decoration: none;
@@ -161,6 +162,27 @@ a:hover {
 	background-color: var(--color-primary);
 	color: #fff;
 	border: none;
+}
+/* 좋아요 버튼 */
+.like-button {
+	background: none;
+	border: none;
+}
+
+.fa-heart {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 20px;
+	transition: transform 0.2s ease, color 0.3s ease;
+}
+
+.fa-heart:hover {
+	transform: scale(1.2);
+}
+
+.fa-heart {
+	color: #e74c3c;
 }
 
 /* 글쓰기 버튼 */

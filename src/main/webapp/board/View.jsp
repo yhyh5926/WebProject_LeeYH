@@ -18,10 +18,9 @@ String category = request.getParameter("category") == null ? "free" : request.ge
 }
 
 body {
-	background-color: #f0f2f5;
-	color: #333;
+	background-color: #f5f6fa;
 	font-family: 'Arial', sans-serif;
-	line-height: 1.6;
+	color: #333;
 }
 
 /* -------------------- 카테고리 색상 -------------------- */
@@ -40,183 +39,177 @@ body.category-data {
 	--color-primary-dark: #8e44ad;
 }
 
-/* -------------------- 페이지 헤더 -------------------- */
-.page-header {
+/* -------------------- 헤더 -------------------- */
+header {
 	text-align: center;
-	margin-block: 30px;
+	padding: 30px 0;
 }
 
-.page-header h2 {
-	color: var(--color-primary);
+header h1 {
 	font-size: 32px;
-	font-weight: 700;
+	font-weight: bold;
+	color: var(--color-primary);
 	border-bottom: 3px solid var(--color-primary);
 	display: inline-block;
 	padding-bottom: 5px;
 }
 
-/* -------------------- 카드형 상세보기 -------------------- */
-.card {
-	background-color: #fff;
+/* -------------------- 게시글 카드 -------------------- */
+.article-card {
 	max-width: 900px;
-	margin: 0 auto 20px auto;
-	padding: 25px 30px;
+	margin: 20px auto;
+	background: #fff;
 	border-radius: 12px;
 	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-	display: flex;
-	flex-direction: column;
-	gap: 25px;
+	padding: 25px 30px;
 }
 
 /* -------------------- 글 정보 -------------------- */
-.card .info {
+.article-meta {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
-	gap: 15px;
-	font-size: 16px;
-	color: #555;
 	border-bottom: 1px solid #e0e0e0;
 	padding-bottom: 15px;
+	margin-bottom: 20px;
+	font-size: 15px;
+	color: #555;
 }
 
-.info-item {
+.meta-item {
 	flex: 1 1 45%;
-	display: flex;
-	justify-content: space-between;
+	margin-bottom: 8px;
 }
 
-.info-item span:first-child {
-	font-weight: 600;
+.meta-item span:first-child {
+	font-weight: bold;
 	color: #777;
 }
 
-/* -------------------- 글 제목 -------------------- */
-.card .title {
-	font-size: 28px;
-	font-weight: 700;
+/* -------------------- 제목 -------------------- */
+.article-title {
+	font-size: 26px;
+	font-weight: bold;
 	color: var(--color-primary);
-	border-bottom: 1px solid #e0e0e0;
-	padding-bottom: 10px;
+	margin-bottom: 15px;
 }
 
-/* -------------------- 글 내용 -------------------- */
-.card .content {
-	min-height: 220px;
+/* -------------------- 내용 -------------------- */
+.article-content {
+	background: #f9fafc;
 	padding: 20px;
-	background-color: #f9fafc;
 	border-radius: 8px;
-	font-size: 16px;
+	min-height: 200px;
 	white-space: pre-line;
 	box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
 }
 
-/* -------------------- 첨부파일 & 미디어 -------------------- */
-.card .media-container {
+/* -------------------- 첨부파일 -------------------- */
+.media-container {
 	margin-top: 15px;
-	display: flex;
-	flex-direction: column;
-	gap: 15px;
 }
 
-.card .media-container img, .card .media-container video, .card .media-container audio
-	{
+.media-container img, .media-container video, .media-container audio {
 	max-width: 100%;
 	border-radius: 8px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* 첨부파일 다운로드 */
-.card .attachment {
+.attachment {
 	margin-top: 10px;
 	font-size: 14px;
-	display: flex;
-	align-items: center;
-	gap: 5px;
 }
 
-.card .attachment::before {
-	content: "📎";
+.attachment::before {
+	content: "📎 ";
 }
 
-.card .attachment a {
+.attachment a {
 	color: var(--color-primary);
 	font-weight: bold;
 	text-decoration: none;
 }
 
-.card .attachment a:hover {
+.attachment a:hover {
 	text-decoration: underline;
 }
 
 /* -------------------- 버튼 그룹 -------------------- */
 .button-group {
-	max-width: 900px;
-	margin: 10px auto;
 	display: flex;
 	justify-content: flex-end;
-	flex-wrap: wrap;
 	gap: 10px;
+	margin-top: 20px;
 }
 
 .button-group button {
-	padding: 12px 20px;
+	padding: 10px 18px;
 	border: none;
 	border-radius: 6px;
-	background-color: var(--color-primary);
+	background: var(--color-primary);
 	color: #fff;
-	font-weight: 600;
-	font-size: 16px;
+	font-weight: bold;
 	cursor: pointer;
-	transition: background 0.2s ease, transform 0.1s ease;
+	transition: background 0.2s ease;
 }
 
 .button-group button:hover {
-	background-color: var(--color-primary-dark);
-	transform: translateY(-1px);
+	background: var(--color-primary-dark);
 }
 
-.card a {
-	color: var(--color-primary);
-	text-decoration: none;
-	font-weight: 600;
+/* -------------------- 좋아요 -------------------- */
+.like-button {
+	background: none;
+	border: none;
 }
 
-.card a:hover {
-	text-decoration: underline;
+.fa-heart {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 20px;
+	transition: transform 0.2s ease, color 0.3s ease;
+}
+
+.fa-heart:hover {
+	transform: scale(1.2);
+}
+
+.fa-heart {
+	color: #e74c3c;
 }
 </style>
 </head>
 <body class="category-<%=category%>">
 	<jsp:include page="../Common/Link.jsp" />
 
-	<header class="page-header">
-		<h2>게시판 상세보기</h2>
+	<header>
+		<h1>게시판 상세보기</h1>
 	</header>
 
 	<main>
-		<div class="card">
+		<article class="article-card">
 			<!-- 글 정보 -->
-			<div class="info">
-				<div class="info-item">
+			<div class="article-meta">
+				<div class="meta-item">
 					<span>번호</span> <span>${dto.pNum}</span>
 				</div>
-				<div class="info-item">
+				<div class="meta-item">
 					<span>작성자</span> <span>${dto.name}</span>
 				</div>
-				<div class="info-item">
+				<div class="meta-item">
 					<span>작성일</span> <span>${dto.postDate}</span>
 				</div>
-				<div class="info-item">
+				<div class="meta-item">
 					<span>조회수</span> <span>${dto.visitCount}</span>
 				</div>
 			</div>
 
-			<!-- 글 제목 -->
-			<div class="title">${dto.title}</div>
+			<!-- 제목 -->
+			<div class="article-title">${dto.title}</div>
 
-			<!-- 글 내용 -->
-			<div class="content">
+			<!-- 내용 -->
+			<div class="article-content">
 				${dto.content}
 
 				<!-- 첨부 미디어 -->
@@ -249,18 +242,74 @@ body.category-data {
 					</div>
 				</c:if>
 			</div>
-		</div>
 
-		<!-- 버튼 그룹 -->
-		<div class="button-group">
-			<c:if test="${not empty userId and sessionScope.userId eq dto.id}">
+			<!-- 좋아요 수 -->
+			<div style="color: red; text-align: right; margin-top: 20px;">
+				<span class="like-count">좋아요 ${dto.likeCount}</span>
+				<c:if test="${not empty userId}">
+					<c:choose>
+						<c:when test="${dto.likedByUser}">
+							<button type="button" class="like-button" data-pnum="${dto.pNum}">
+								<i class="fa-solid fa-heart liked"></i>
+							</button>
+						</c:when>
+						<c:otherwise>
+							<button type="button" class="like-button" data-pnum="${dto.pNum}">
+								<i class="fa-regular fa-heart"></i>
+							</button>
+						</c:otherwise>
+					</c:choose>
+				</c:if>
+			</div>
+
+			<!-- 버튼 그룹 -->
+			<div class="button-group">
+				<c:if test="${not empty userId and sessionScope.userId eq dto.id}">
+					<button type="button"
+						onclick="location.href='./Edit.do?categoty=<%=category%>&pNum=${dto.pNum}'">
+						수정하기</button>
+					<button type="button"
+						onclick="if(confirm('정말 삭제하시겠습니까?')) 
+             				location.href='./Delete.do?category=<%=category%>&pNum=${dto.pNum}'">
+						삭제하기</button>
+
+				</c:if>
 				<button type="button"
-					onclick="location.href='./edit.do?pNum=${param.pNum}'">수정하기</button>
-				<button type="button"
-					onclick="if(confirm('정말 삭제하시겠습니까?')) location.href='./delete.do?pNum=${param.pNum}'">삭제하기</button>
-			</c:if>
-			<button type="button" onclick="history.back()">목록 바로가기</button>
-		</div>
+					onclick="location.href='./Board.do?category=<%=category%>'">목록
+					바로가기</button>
+			</div>
+		</article>
 	</main>
+	<script>
+	document.addEventListener("DOMContentLoaded", function() {
+		  document.addEventListener("click", function(e) {
+		    if (e.target.closest(".like-button")) {
+		      const btn = e.target.closest(".like-button");
+		      const pNum = btn.getAttribute("data-pnum");
+
+		      fetch("./Like.do?pNum=" + pNum, { method: "POST" })
+		        .then(res => res.json())
+		        .then(data => {
+		          if (data.success) {
+		            const icon = btn.querySelector("i");
+		            if (data.liked) {
+		              icon.classList.remove("fa-regular");
+		              icon.classList.add("fa-solid", "liked");
+		            } else {
+		              icon.classList.remove("fa-solid", "liked");
+		              icon.classList.add("fa-regular");
+		            }  
+		            // 좋아요 수 갱신
+		            const likeCountSpan = btn.parentElement.querySelector(".like-count");
+		            likeCountSpan.textContent = "좋아요 " + data.likeCount;
+
+		          } else {
+		            alert(data.message);
+		          }
+		        });
+		    }
+		  });
+		});
+	</script>
 </body>
 </html>

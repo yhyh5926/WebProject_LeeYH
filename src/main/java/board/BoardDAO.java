@@ -1,5 +1,6 @@
 package board;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -43,10 +44,10 @@ public class BoardDAO extends DBConnPool {
 
 	public int insertWrite(BoardDTO dto) {
 		int result = 0;
+		String query = "INSERT INTO board (pnum, id, title, content, ofile, sfile, category) "
+				+ "VALUES (TO_CHAR(seq_board_num.NEXTVAL), ?, ?, ?, ?, ?, ?)";
 
 		try {
-			String query = "INSERT INTO board (pnum, id, title, content, ofile, sfile, category) "
-					+ "VALUES (seq_board_num.NEXTVAL, ?, ?, ?, ?, ?, ?)";
 
 			psmt = con.prepareStatement(query);
 			psmt.setString(1, dto.getId());
@@ -83,8 +84,10 @@ public class BoardDAO extends DBConnPool {
 				dto.setOfile(rs.getString(7));
 				dto.setSfile(rs.getString(8));
 				dto.setCategory(rs.getString(9));
-				dto.setName(rs.getString(10));
+				dto.setLikeCount(rs.getInt(10));
+				dto.setName(rs.getString(11));
 			}
+
 		} catch (Exception e) {
 			System.err.println("게시물 상세보기 중 예외 발생");
 			e.printStackTrace();
@@ -98,7 +101,7 @@ public class BoardDAO extends DBConnPool {
 		try {
 			psmt = con.prepareStatement(query);
 			psmt.setString(1, pNum);
-			psmt.executeQuery();
+			psmt.executeUpdate();
 		} catch (Exception e) {
 			System.err.println("게시물 조회수 증가 중 예외 발생");
 			e.printStackTrace();
@@ -107,8 +110,9 @@ public class BoardDAO extends DBConnPool {
 
 	public int deletePost(String pNum) {
 		int result = 0;
+		String query = "DELETE FROM board WHERE pnum=?";
 		try {
-			String query = "DELETE FROM board WHERE pnum=?";
+
 			psmt = con.prepareStatement(query);
 			psmt.setString(1, pNum);
 			result = psmt.executeUpdate();
@@ -121,8 +125,8 @@ public class BoardDAO extends DBConnPool {
 
 	public int updatePost(BoardDTO dto) {
 		int result = 0;
+		String query = "UPDATE board" + " SET title=?, content=?, ofile=?, sfile=? " + " WHERE pnum=? and id=?";
 		try {
-			String query = "UPDATE board" + " SET title=?, content=?, ofile=?, sfile=? " + " WHERE pnum=? and id=?";
 
 			psmt = con.prepareStatement(query);
 			psmt.setString(1, dto.getTitle());
@@ -144,8 +148,8 @@ public class BoardDAO extends DBConnPool {
 	public List<BoardDTO> selectListPage(Map<String, Object> map) {
 		List<BoardDTO> board = new Vector<BoardDTO>();
 
-		String query = "SELECT * FROM ( " + "    SELECT Tb.*, ROWNUM rNum FROM ( "
-				+ "        SELECT b.*, m.name FROM board b " + "        JOIN member m ON b.id = m.id ";
+		String query = "SELECT * FROM ( " + "    SELECT Tb.*, ROWNUM rNum FROM ( " + "        SELECT b.*, m.name "
+				+ "FROM board b " + "JOIN member m ON b.id = m.id ";
 
 		// category 조건 추가
 		query += " WHERE b.category = ? ";
@@ -155,7 +159,7 @@ public class BoardDAO extends DBConnPool {
 			query += " AND " + map.get("searchField") + " LIKE ? ";
 		}
 
-		query += "        ORDER BY b.pnum DESC " + "    ) Tb " + ") " + "WHERE rNum BETWEEN ? AND ?";
+		query += " ORDER BY b.pnum DESC " + " ) Tb " + ") WHERE rNum BETWEEN ? AND ?";
 
 		try {
 			psmt = con.prepareStatement(query);
@@ -187,7 +191,8 @@ public class BoardDAO extends DBConnPool {
 				dto.setOfile(rs.getString("ofile"));
 				dto.setSfile(rs.getString("sfile"));
 				dto.setCategory(rs.getString("category"));
-				dto.setName(rs.getString("name")); // member 테이블의 name
+				dto.setLikeCount(rs.getInt("likeCount"));
+				dto.setName(rs.getString("name"));
 
 				board.add(dto);
 			}
@@ -197,6 +202,89 @@ public class BoardDAO extends DBConnPool {
 		}
 
 		return board;
+	}
+
+	// 좋아요
+	public boolean addFavorite(String pNum, String userId) {
+		String query = "INSERT INTO favorite(fnum, pnum, id) VALUES(seq_favorite_num.NEXTVAL, ?, ?)";
+		try {
+			psmt = con.prepareStatement(query);
+			psmt.setString(1, pNum);
+			psmt.setString(2, userId);
+			psmt.executeUpdate();
+
+			// board 테이블 likeCount 증가
+			query = "UPDATE board SET likecount = likecount + 1 WHERE pnum=?";
+			psmt = con.prepareStatement(query);
+			psmt.setString(1, pNum);
+			psmt.executeUpdate();
+			return true;
+		} catch (Exception e) {
+			System.out.println("게시물 좋아요 중 예외 발생");
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	// 좋아요 수 얻기
+	public int getLikeCount(String pNum) {
+		String query = "SELECT likecount FROM board WHERE pnum=?";
+		try {
+			psmt = con.prepareStatement(query);
+			psmt.setString(1, pNum);
+			rs = psmt.executeQuery();
+			if (rs.next())
+				return rs.getInt(1);
+		} catch (Exception e) {
+			System.out.println("좋아요 수 얻기 중 예외 발생");
+			e.printStackTrace();
+			return 0;
+		}
+		return 0;
+
+	}
+
+	// 특정 사용자가 해당 글에 좋아요 했는지 확인
+	public boolean hasFavorite(String pNum, String userId) {
+		String query = "SELECT COUNT(*) FROM favorite WHERE pnum=? AND id=?";
+		try {
+			psmt = con.prepareStatement(query);
+			psmt.setString(1, pNum);
+			psmt.setString(2, userId);
+			rs = psmt.executeQuery();
+			if (rs.next()) {
+				return rs.getInt(1) > 0;
+			}
+		} catch (Exception e) {
+			System.out.println("좋아요 여부 확인 중 예외 발생");
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	// 좋아요 취소
+	public boolean removeFavorite(String pNum, String userId) {
+		try {
+			// favorite 테이블에서 삭제
+			String query = "DELETE FROM favorite WHERE pnum=? AND id=?";
+			psmt = con.prepareStatement(query);
+			psmt.setString(1, pNum);
+			psmt.setString(2, userId);
+			int result = psmt.executeUpdate();
+
+			if (result > 0) {
+				// board 테이블 likeCount 감소
+				query = "UPDATE board SET likecount = likecount - 1 WHERE pnum=?";
+				psmt = con.prepareStatement(query);
+				psmt.setString(1, pNum);
+				psmt.executeUpdate();
+				return true;
+			}
+		} catch (Exception e) {
+			System.out.println("좋아요 취소 중 예외 발생");
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

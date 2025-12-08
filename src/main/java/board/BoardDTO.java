@@ -12,6 +12,18 @@ public class BoardDTO {
 	private String ofile;
 	private String sfile;
 	private String category;
+	private int likeCount;
+
+	//좋아요 했는지 여부
+	private boolean likedByUser;
+
+	public boolean isLikedByUser() {
+		return likedByUser;
+	}
+
+	public void setLikedByUser(boolean likedByUser) {
+		this.likedByUser = likedByUser;
+	}
 
 	// 조인으로 가져옴
 	private String name;
@@ -94,6 +106,14 @@ public class BoardDTO {
 
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	public int getLikeCount() {
+		return likeCount;
+	}
+
+	public void setLikeCount(int likeCount) {
+		this.likeCount = likeCount;
 	}
 
 }
