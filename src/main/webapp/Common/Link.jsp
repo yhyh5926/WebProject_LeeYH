@@ -1,16 +1,31 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%
-// 요청 파라미터로 카테고리 받기
 String category = request.getParameter("category");
 if (category == null)
-	category = "free"; // 기본값
+	category = "free";
+
+String userId = null;
+Cookie[] cookies = request.getCookies();
+if (cookies != null) {
+	for (Cookie c : cookies) {
+		if ("userId".equals(c.getName())) {
+	userId = c.getValue();
+	break;
+		}
+	}
+}
 %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <title>메뉴 페이지</title>
+
+<!-- Font Awesome -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
 * {
 	margin: 0;
@@ -28,142 +43,163 @@ body {
 	padding: 12px 20px;
 	display: flex;
 	align-items: center;
-	gap: 20px;
+	justify-content: space-between;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 	position: sticky;
 	top: 0;
 	z-index: 1000;
-	transition: background-color 0.3s ease;
 }
 
-/* 카테고리별 배경색 */
 .header-free {
-	background-color: mediumseagreen;
+	background: mediumseagreen;
 }
 
 .header-qna {
-	background-color: steelblue;
+	background: steelblue;
 }
 
 .header-data {
-	background-color: purple;
+	background: purple;
 }
 
-/* 홈 버튼 */
-.header-home {
-	text-decoration: none;
-	font-size: 16px;
-	font-weight: bold;
-	color: white;
-	padding: 6px 12px;
-	border-radius: 5px;
-	transition: all 0.3s ease;
+/* 네비게이션 */
+nav {
+	flex: 1;
 }
 
-.header-home:hover {
-	background-color: #4caf50;
-	transform: translateY(-2px);
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-/* 오른쪽 메뉴 그룹 */
-.header-right {
-	margin-left: auto;
+nav ul {
+	list-style: none;
 	display: flex;
-	gap: 10px;
+	gap: 20px;
+}
+
+nav ul li a {
+	text-decoration: none;
+	font-size: 15px;
+	font-weight: bold;
+	color: white;
+	padding: 8px 14px;
+	border-radius: 6px;
+	display: flex;
 	align-items: center;
-}
-
-/* 로그인/로그아웃 */
-.header-login, .header-logout, .header-update {
-	text-decoration: none;
-	font-size: 16px;
-	font-weight: bold;
-	color: white;
-	padding: 6px 10px;
-	border-radius: 5px;
+	gap: 8px;
 	transition: all 0.3s ease;
 }
 
-.header-login:hover {
-	background-color: #f44336;
-	text-decoration: none;
-} /* 빨강 */
-.header-logout:hover {
-	background-color: #ff9800;
-	text-decoration: none;
-} /* 주황 */
-.header-update:hover {
-	background-color: #f54140;
-	text-decoration: none;
+nav ul li a:hover {
+	background: rgba(255, 255, 255, 0.2);
+	transform: translateY(-2px);
 }
 
-/* 게시판 버튼 */
-.header-board1, .header-board2, .header-board3 {
-	text-decoration: none;
-	font-size: 16px;
-	font-weight: bold;
-	color: white;
-	padding: 6px 10px;
-	border-radius: 5px;
-	transition: all 0.3s ease;
+/* 사용자 메뉴 */
+.user-menu {
+	display: flex;
+	align-items: center;
+	gap: 15px;
 }
 
-.header-board1:hover {
-	background-color: #ffeb3b;
-	text-decoration: none;
-	color: #333;
-} /* 노랑 */
-.header-board2:hover {
-	background-color: #2196f3;
-	text-decoration: none;
-} /* 파랑 */
-.header-board3:hover {
-	background-color: #9c27b0;
-	text-decoration: none;
-} /* 보라 */
-
-/* 사용자 이름 */
 .user-info {
 	color: white;
 	font-weight: bold;
+}
+
+.user-menu a {
+	text-decoration: none;
+	font-size: 14px;
+	font-weight: bold;
+	color: white;
+	padding: 6px 10px;
+	border-radius: 5px;
+	transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.user-menu a:hover {
+	background: rgba(255, 255, 255, 0.25);
+}
+
+/* 햄버거 버튼 */
+.menu-toggle {
+	display: none;
+	font-size: 22px;
+	color: white;
+	cursor: pointer;
+}
+
+/* -------------------- 반응형 -------------------- */
+@media ( max-width : 768px) {
+	nav ul {
+		flex-direction: column;
+		background: rgba(0, 0, 0, 0.2);
+		position: absolute;
+		top: 60px;
+		left: 0;
+		width: 100%;
+		padding: 10px 0;
+		display: none;
+	}
+	nav ul.show {
+		display: flex;
+	}
+	.menu-toggle {
+		display: block;
+	}
 }
 </style>
 </head>
 <body>
 	<div class="header <%="header-" + category%>">
 		<!-- 홈 버튼 -->
-		<a href="<%=request.getContextPath()%>/" class="header-home">홈</a>
+		<div class="menu-toggle" onclick="toggleMenu()">
+			<i class="fa-solid fa-bars"></i>
+		</div>
+		<nav>
+			<ul id="nav-links">
+				<li><a href="<%=request.getContextPath()%>/"><i
+						class="fa-solid fa-house"></i> 홈</a></li>
+				<li><a
+					href="<%=request.getContextPath()%>/board/Board.do?category=free"><i
+						class="fa-solid fa-comments"></i> 자유게시판</a></li>
+				<li><a
+					href="<%=request.getContextPath()%>/board/Board.do?category=qna"><i
+						class="fa-solid fa-circle-question"></i> QnA게시판</a></li>
+				<li><a
+					href="<%=request.getContextPath()%>/board/Board.do?category=data"><i
+						class="fa-solid fa-folder-open"></i> 자료게시판</a></li>
+			</ul>
+		</nav>
 
-		<!-- 오른쪽 메뉴 -->
-		<div class="header-right">
+		<!-- 사용자 메뉴 -->
+		<div class="user-menu">
 			<%
 			if (session.getAttribute("userId") == null) {
 			%>
-			<a href="<%=request.getContextPath()%>/sign/LoginForm.jsp"
-				class="header-login">로그인</a>
+			<a href="<%=request.getContextPath()%>/sign/LoginForm.jsp"><i
+				class="fa-solid fa-right-to-bracket"></i> 로그인</a>
 			<%
 			} else {
 			%>
-			<div class="user-info"><%=session.getAttribute("userId")%>
+			<div class="user-info">
+				<i class="fa-solid fa-user"></i>
+				<%=userId%>
 				회원님
 			</div>
-			<a href="<%=request.getContextPath()%>/sign/UpdateForm.do"
-				class="header-update">회원정보 수정</a> <a
-				href="<%=request.getContextPath()%>/sign/Logout.jsp"
-				class="header-logout">로그아웃</a>
+			<a href="<%=request.getContextPath()%>/sign/UpdateForm.do"><i
+				class="fa-solid fa-user-gear"></i> 회원정보 수정</a> <a
+				href="<%=request.getContextPath()%>/sign/Logout.jsp"><i
+				class="fa-solid fa-right-from-bracket"></i> 로그아웃</a>
 			<%
 			}
 			%>
-
-			<!-- 게시판 링크 -->
-			<a href="<%=request.getContextPath()%>/board/Board.do?category=free"
-				class="header-board1">자유게시판</a> <a
-				href="<%=request.getContextPath()%>/board/Board.do?category=qna"
-				class="header-board2">QnA게시판</a> <a
-				href="<%=request.getContextPath()%>/board/Board.do?category=data"
-				class="header-board3">자료게시판</a>
 		</div>
 	</div>
+
+	<script>
+		function toggleMenu() {
+			document.getElementById("nav-links").classList.toggle("show");
+		}
+	</script>
 </body>
 </html>
