@@ -75,7 +75,7 @@ body {
 }
 
 /* 로그인/로그아웃 */
-.header-login, .header-logout {
+.header-login, .header-logout, .header-update {
 	text-decoration: none;
 	font-size: 16px;
 	font-weight: bold;
@@ -87,10 +87,16 @@ body {
 
 .header-login:hover {
 	background-color: #f44336;
+	text-decoration: none;
 } /* 빨강 */
 .header-logout:hover {
 	background-color: #ff9800;
+	text-decoration: none;
 } /* 주황 */
+.header-update:hover {
+	background-color: #f54140;
+	text-decoration: none;
+}
 
 /* 게시판 버튼 */
 .header-board1, .header-board2, .header-board3 {
@@ -105,13 +111,16 @@ body {
 
 .header-board1:hover {
 	background-color: #ffeb3b;
+	text-decoration: none;
 	color: #333;
 } /* 노랑 */
 .header-board2:hover {
 	background-color: #2196f3;
+	text-decoration: none;
 } /* 파랑 */
 .header-board3:hover {
 	background-color: #9c27b0;
+	text-decoration: none;
 } /* 보라 */
 
 /* 사용자 이름 */
@@ -136,10 +145,12 @@ body {
 			<%
 			} else {
 			%>
-			<div class="user-info"><%=session.getAttribute("userName")%>
+			<div class="user-info"><%=session.getAttribute("userId")%>
 				회원님
 			</div>
-			<a href="<%=request.getContextPath()%>/sign/Logout.jsp"
+			<a href="<%=request.getContextPath()%>/sign/UpdateForm.do"
+				class="header-update">회원정보 수정</a> <a
+				href="<%=request.getContextPath()%>/sign/Logout.jsp"
 				class="header-logout">로그아웃</a>
 			<%
 			}

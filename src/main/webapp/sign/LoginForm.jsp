@@ -13,6 +13,10 @@
 	box-sizing: border-box;
 }
 
+body {
+	background: linear-gradient(135deg, #e0f7e9, #f9fff9);
+}
+
 .container {
 	max-width: 400px;
 	margin: 100px auto;
@@ -117,7 +121,7 @@ h2 {
 		</span>
 
 		<%
-		if (session.getAttribute("UserId") == null) {
+		if (session.getAttribute("userId") == null) {
 		%>
 		<script>
 			function validateForm(form) {

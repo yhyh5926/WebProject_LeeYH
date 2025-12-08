@@ -32,7 +32,7 @@
 	</context-param>
 	<context-param>
 		<param-name>OracleURL</param-name>
-		<param-value>jdbc:oracle:thin:@121.140.202.33:1521:xe</param-value>
+		<param-value>jdbc:oracle:thin:@localhost:1521:xe</param-value>
 	</context-param>
 	<context-param>
 		<param-name>OracleId</param-name>

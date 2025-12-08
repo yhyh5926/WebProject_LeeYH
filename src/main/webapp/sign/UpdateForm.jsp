@@ -1,10 +1,38 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="member.MemberDTO"%>
+<%
+MemberDTO member = (MemberDTO) request.getAttribute("member");
+
+// 전화번호 분리
+String phone1 = "";
+String phone2 = "";
+String phone3 = "";
+if (member.getPhone() != null && member.getPhone().contains("-")) {
+	String[] phoneParts = member.getPhone().split("-");
+	if (phoneParts.length == 3) {
+		phone1 = phoneParts[0];
+		phone2 = phoneParts[1];
+		phone3 = phoneParts[2];
+	}
+}
+
+// 이메일 분리
+String emailId = "";
+String emailDomain = "";
+if (member.getEmail() != null && member.getEmail().contains("@")) {
+	String[] emailParts = member.getEmail().split("@");
+	if (emailParts.length == 2) {
+		emailId = emailParts[0];
+		emailDomain = emailParts[1];
+	}
+}
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>WebProject_LeeYH - 회원가입</title>
+<title>WebProject_LeeYH - 회원정보 수정</title>
 <style>
 * {
 	margin: 0;
@@ -42,7 +70,7 @@ h2 {
 	font-size: 0.95em;
 }
 
-.signup-form {
+.update-form {
 	display: flex;
 	flex-direction: column;
 	gap: 18px;
@@ -69,32 +97,10 @@ h2 {
 	transition: all 0.25s ease;
 }
 
-#userId {
-	width: 75%;
-}
-
 .input-group input:focus, .input-group select:focus {
 	border-color: mediumseagreen;
 	box-shadow: 0 0 6px rgba(60, 179, 113, 0.4);
 	outline: none;
-}
-
-/* 중복확인 버튼 스타일 */
-.input-group button {
-	padding: 10px 16px;
-	border-radius: 6px;
-	border: none;
-	background-color: #4caf50; /* 기본 초록색 */
-	color: white;
-	font-weight: bold;
-	cursor: pointer;
-	transition: all 0.25s ease;
-}
-
-.input-group button:hover {
-	background-color: #43a047; /* hover 시 더 진한 초록 */
-	transform: translateY(-2px);
-	box-shadow: 0 3px 8px rgba(76, 175, 80, 0.4);
 }
 
 /* 이메일 그룹 */
@@ -112,7 +118,7 @@ h2 {
 	gap: 6px;
 }
 
-.signup-btn {
+.update-btn {
 	padding: 14px 22px;
 	background: mediumseagreen;
 	border: none;
@@ -124,7 +130,7 @@ h2 {
 	transition: all 0.3s ease;
 }
 
-.signup-btn:hover {
+.update-btn:hover {
 	background: seagreen;
 	transform: translateY(-2px);
 	box-shadow: 0 4px 12px rgba(60, 179, 113, 0.4);
@@ -151,56 +157,28 @@ h2 {
 	transform: translateY(-1px);
 }
 </style>
-<script>
-function checkDuplicateId() {
-    const userId = document.getElementById("userId").value;
-    const msg = document.getElementById("idCheckMsg");
-
-    if (!userId) {
-        alert("아이디를 입력하세요.");
-        return;
-    }
-
-    fetch("<%=request.getContextPath()%>/CheckId.do?userId=" + encodeURIComponent(userId))
-        .then(response => response.json())
-        .then(data => {
-            if (data.exists) {
-                msg.innerText = "이미 사용 중인 아이디입니다.";
-                msg.className = "error";
-            } else {
-                msg.innerText = "사용 가능한 아이디입니다.";
-                msg.className = "success";
-            }
-        })
-        .catch(err => console.error(err));
-}
-</script>
 </head>
 <body>
 	<jsp:include page="../Common/Link.jsp"></jsp:include>
 	<div class="container">
-		<h2>회원가입</h2>
-		<span class="error-msg"> <%=request.getAttribute("SignupErrMsg") == null ? "" : request.getAttribute("SignupErrMsg")%>
+		<h2>회원정보 수정</h2>
+		<span class="error-msg"> <%=request.getAttribute("UpdateErrMsg") == null ? "" : request.getAttribute("UpdateErrMsg")%>
 		</span>
 
-		<form class="signup-form" action="./SignupProcess.jsp" method="post"
-			name="signupFrm">
+		<form class="update-form" action="./UpdateProcess.jsp" method="post"
+			name="updateFrm">
 			<div class="input-group">
-				<label for="userId">아이디</label>
-				<div style="display: flex; gap: 6px;">
-					<input type="text" name="userId" id="userId">
-					<button type="button" onclick="checkDuplicateId()">중복확인</button>
-				</div>
-				<span id="idCheckMsg" style="font-size: 13px; color: crimson;"></span>
+				<label for="userId">아이디</label> <input type="text" name="userId"
+					id="userId" value="<%=member.getId()%>" readonly>
 			</div>
 
 			<div class="input-group">
 				<label for="userName">이름</label> <input type="text" name="userName"
-					id="userName">
+					id="userName" value="<%=member.getName()%>">
 			</div>
 
 			<div class="input-group">
-				<label for="userPwd">비밀번호</label> <input type="password"
+				<label for="userPwd">새 비밀번호</label> <input type="password"
 					name="userPwd" id="userPwd">
 			</div>
 
@@ -209,14 +187,18 @@ function checkDuplicateId() {
 					name="userPwdConfirm" id="userPwdConfirm">
 			</div>
 
+			<!-- 이메일 -->
 			<div class="input-group">
 				<label for="userEmail">이메일</label>
 				<div class="email-group">
-					<input type="text" name="emailId" id="emailId" placeholder="이메일 입력">
+					<input type="text" name="emailId" id="emailId" value="<%=emailId%>">
 					<span>@</span> <select name="emailDomain" id="emailDomain">
-						<option value="naver.com">naver.com</option>
-						<option value="gmail.com">gmail.com</option>
-						<option value="daum.net">daum.net</option>
+						<option value="naver.com"
+							<%="naver.com".equals(emailDomain) ? "selected" : ""%>>naver.com</option>
+						<option value="gmail.com"
+							<%="gmail.com".equals(emailDomain) ? "selected" : ""%>>gmail.com</option>
+						<option value="daum.net"
+							<%="daum.net".equals(emailDomain) ? "selected" : ""%>>daum.net</option>
 						<option value="직접입력">직접입력</option>
 					</select>
 				</div>
@@ -224,22 +206,22 @@ function checkDuplicateId() {
 					placeholder="직접 입력" style="display: none;">
 			</div>
 
+			<!-- 전화번호 -->
 			<div class="input-group">
 				<label for="userPhone">전화번호</label>
 				<div class="phone-group">
 					<input type="text" name="phone1" id="phone1" maxlength="3"
-						placeholder="010"> <input type="text" name="phone2"
-						id="phone2" maxlength="4" placeholder="1234"> <input
+						value="<%=phone1%>"> <input type="text" name="phone2"
+						id="phone2" maxlength="4" value="<%=phone2%>"> <input
 						type="text" name="phone3" id="phone3" maxlength="4"
-						placeholder="5678">
+						value="<%=phone3%>">
 				</div>
 			</div>
 
-			<input type="submit" class="signup-btn" value="회원가입">
+			<input type="submit" class="update-btn" value="정보 수정">
 
 			<div class="extra-actions">
 				<button type="button" onclick="history.back()">뒤로가기</button>
-				<button type="button" onclick="location.href='LoginForm.jsp'">로그인</button>
 			</div>
 		</form>
 	</div>

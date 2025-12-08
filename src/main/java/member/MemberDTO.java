@@ -17,6 +17,8 @@ public class MemberDTO {
 	private String password;
 	private String name;
 	private String regidate;
+	private String email;
+	private String phone;
 
 	/*
 	 * 생성자의 경우 꼭 필요한 경우가 아니라면 생략 이 경우 디폴트 생성자가 컴파일러에 의해 자동으로 추가되기 때문
@@ -55,6 +57,22 @@ public class MemberDTO {
 
 	public void setRegidate(String regidate) {
 		this.regidate = regidate;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 }
