@@ -146,20 +146,20 @@ public class BoardDAO extends DBConnPool {
 	}
 
 	public List<BoardDTO> selectListPage(Map<String, Object> map) {
-		List<BoardDTO> board = new Vector<BoardDTO>();
+		List<BoardDTO> board = new Vector<>();
 
-		String query = "SELECT * FROM ( " + "    SELECT Tb.*, ROWNUM rNum FROM ( " + "        SELECT b.*, m.name "
-				+ "FROM board b " + "JOIN member m ON b.id = m.id ";
-
-		// category 조건 추가
-		query += " WHERE b.category = ? ";
+		String query = "SELECT * FROM ( " + "    SELECT Tb.*, ROWNUM rNum FROM ( "
+				+ "        SELECT b.*, m.name, NVL(c.commentsCount, 0) AS commentsCount " + "        FROM board b "
+				+ "        JOIN member m ON b.id = m.id " + "        LEFT JOIN ( "
+				+ "            SELECT pnum, COUNT(*) AS commentsCount " + "            FROM comments "
+				+ "            GROUP BY pnum " + "        ) c ON b.pnum = c.pnum " + "        WHERE b.category = ? ";
 
 		// 검색 조건 추가
 		if (map.get("searchWord") != null) {
 			query += " AND " + map.get("searchField") + " LIKE ? ";
 		}
 
-		query += " ORDER BY b.pnum DESC " + " ) Tb " + ") WHERE rNum BETWEEN ? AND ?";
+		query += "  ORDER BY b.pnum DESC " + "    ) Tb " + ") WHERE rNum BETWEEN ? AND ?";
 
 		try {
 			psmt = con.prepareStatement(query);
@@ -193,6 +193,7 @@ public class BoardDAO extends DBConnPool {
 				dto.setCategory(rs.getString("category"));
 				dto.setLikeCount(rs.getInt("likeCount"));
 				dto.setName(rs.getString("name"));
+				dto.setCommentsCount(rs.getInt("commentsCount")); // 댓글 수 추가
 
 				board.add(dto);
 			}

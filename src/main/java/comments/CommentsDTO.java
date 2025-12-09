@@ -1,11 +1,15 @@
 package comments;
 
+import java.sql.Date;
+
 public class CommentsDTO {
 	private String cNum;
 	private String pNum;
 	private String id;
 	private String content;
-	private String regidate;
+	private Date regidate;
+
+	private String name;
 
 	public String getcNum() {
 		return cNum;
@@ -39,12 +43,20 @@ public class CommentsDTO {
 		this.content = content;
 	}
 
-	public String getRegidate() {
+	public Date getRegidate() {
 		return regidate;
 	}
 
-	public void setRegidate(String regidate) {
-		this.regidate = regidate;
+	public void setRegidate(Date date) {
+		this.regidate = date;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

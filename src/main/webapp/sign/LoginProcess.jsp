@@ -18,7 +18,7 @@ dao.close();
 if (memberDTO.getId() != null) {
 	//세션 저장
 	session.setAttribute("userId", memberDTO.getId());
-
+	session.setAttribute("userName", memberDTO.getName());
 	//쿠키 생성
 	Cookie cookie = new Cookie("userId", memberDTO.getId());
 	cookie.setMaxAge(60 * 60 * 24); // 쿠키 유효기간: 1일 (초 단위)

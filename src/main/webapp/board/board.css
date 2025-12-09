@@ -7,28 +7,26 @@
 body {
 	background-color: #f8f9fa;
 	color: #333;
-	overflow-y: hidden;
 }
 
 /* 카테고리별 색상 변수 (세련된 톤) */
 body.category-free {
-	--color-primary: #2ca273; /* 진한 민트 */
-	--color-page-button: #3b7dd8; /* 블루톤 */
-	--color-write-btn: #ff8c42; /* 따뜻한 오렌지 */
+	--color-primary: #2ca273;
+	--color-page-button: #3b7dd8;
+	--color-write-btn: #ff8c42;
 }
 
 body.category-qna {
-	--color-primary: #1e3a8a; /* 딥 블루 */
-	--color-page-button: #2563eb; /* 블루 계열 */
-	--color-write-btn: #facc15; /* 선명한 옐로우 */
+	--color-primary: #1e3a8a;
+	--color-page-button: #2563eb;
+	--color-write-btn: #facc15;
 }
 
 body.category-data {
-	--color-primary: #7c3aed; /* 퍼플톤 */
-	--color-page-button: #5b21b6; /* 딥 퍼플 */
-	--color-write-btn: #ef4444; /* 레드 계열 */
+	--color-primary: #7c3aed;
+	--color-page-button: #5b21b6;
+	--color-write-btn: #ef4444;
 }
-
 
 /* a 태그 */
 a {
@@ -54,7 +52,7 @@ a:hover {
 /* 검색 폼 */
 .search-form {
 	max-width: 900px;
-	margin: 20px auto;
+	margin: 0 auto;
 	padding: 12px;
 	border: 2px solid var(--color-primary);
 	border-radius: 12px;
@@ -72,6 +70,14 @@ a:hover {
 	border: 1px solid var(--color-primary);
 	border-radius: 6px;
 	font-size: 14px;
+}
+
+.search-form input[type="text"] {
+	padding: 8px 14px;
+	border: 1px solid var(--color-primary);
+	border-radius: 6px;
+	font-size: 14px;
+	padding: 8px 14px;
 }
 
 .search-form input[type="submit"] {
@@ -113,6 +119,28 @@ a:hover {
 .board-table td a:hover {
 	text-decoration: underline;
 	color: var(--color-primary);
+}
+
+.comments-count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #f1f3f5;
+	color: #495057;
+	font-size: 0.75rem;
+	font-weight: 600;
+	padding: 3px 8px;
+	border-radius: 16px;
+	margin-left: 8px;
+	border: 1px solid #ced4da;
+	transition: all 0.2s ease-in-out;
+}
+
+.comments-count:hover {
+	background-color: #e9ecef;
+	color: #212529;
+	transform: scale(1.05);
+	cursor: default;
 }
 
 .download-link {
@@ -200,4 +228,50 @@ a:hover {
 .write-btn:hover {
 	background-color: #c2410c;
 	border-color: #c2410c;
+}
+
+/* ================= 반응형 ================= */
+
+/* 태블릿 이하 (768px) */
+@media ( max-width : 768px) {
+	.page-title {
+		font-size: 24px;
+		padding: 15px 0;
+	}
+	.search-form {
+		gap: 8px;
+	}
+	.search-form select, .search-form input[type="text"], .search-form input[type="submit"]
+		{
+		font-size: 13px;
+	}
+	.board-table {
+		width: 100%;
+		font-size: 13px;
+	}
+	.board-table th, .board-table td {
+		padding: 10px 8px;
+	}
+}
+
+/* 모바일 이하 (480px) */
+@media ( max-width : 480px) {
+	.page-title {
+		font-size: 20px;
+	}
+	.search-form {
+		padding: 10px;
+	}
+	.board-table th, .board-table td {
+		font-size: 12px;
+		padding: 8px 6px;
+	}
+	.comments-count {
+		font-size: 0.7rem;
+		padding: 2px 6px;
+	}
+	.page-button, .other, .current {
+		padding: 6px 10px;
+		font-size: 12px;
+	}
 }

@@ -14,8 +14,10 @@ public class BoardDTO {
 	private String category;
 	private int likeCount;
 
-	//좋아요 했는지 여부
+	// 좋아요 했는지 여부
 	private boolean likedByUser;
+
+	private int commentsCount;
 
 	public boolean isLikedByUser() {
 		return likedByUser;
@@ -114,6 +116,14 @@ public class BoardDTO {
 
 	public void setLikeCount(int likeCount) {
 		this.likeCount = likeCount;
+	}
+
+	public int getCommentsCount() {
+		return commentsCount;
+	}
+
+	public void setCommentsCount(int commentsCount) {
+		this.commentsCount = commentsCount;
 	}
 
 }

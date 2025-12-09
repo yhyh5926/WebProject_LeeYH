@@ -18,8 +18,9 @@ String category = request.getParameter("category") == null ? "free" : request.ge
 			<option value="title">제목</option>
 			<option value="content">내용</option>
 			<option value="name">작성자</option>
-		</select> <input type="text" name="searchWord" /> <input type="submit"
-			value="검색하기" />
+		</select> 
+		<input type="text" name="searchWord" required />
+		<input type="submit" value="검색하기" />
 	</form>
 </body>
 </html>

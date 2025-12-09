@@ -262,6 +262,7 @@ header h1 {
 				</c:if>
 			</div>
 
+
 			<!-- 버튼 그룹 -->
 			<div class="button-group">
 				<c:if test="${not empty userId and sessionScope.userId eq dto.id}">
@@ -278,8 +279,17 @@ header h1 {
 					onclick="location.href='./Board.do?category=<%=category%>'">목록
 					바로가기</button>
 			</div>
+
 		</article>
 	</main>
+
+	<%
+	if (category.equals("qna")) {
+	%>
+	<jsp:include page="../comments/List.jsp"></jsp:include>
+	<%
+	}
+	%>
 	<script>
 	document.addEventListener("DOMContentLoaded", function() {
 		  document.addEventListener("click", function(e) {
@@ -310,6 +320,8 @@ header h1 {
 		    }
 		  });
 		});
+	
+	
 	</script>
 </body>
 </html>

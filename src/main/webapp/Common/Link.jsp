@@ -43,11 +43,12 @@ body {
 	padding: 12px 20px;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: space-around;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 	position: sticky;
 	top: 0;
 	z-index: 1000;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .header-free {
@@ -63,14 +64,9 @@ body {
 }
 
 /* 네비게이션 */
-nav {
-	flex: 1;
-}
-
 nav ul {
 	list-style: none;
 	display: flex;
-	gap: 20px;
 }
 
 nav ul li a {
@@ -132,7 +128,7 @@ nav ul li a:hover {
 @media ( max-width : 768px) {
 	nav ul {
 		flex-direction: column;
-		background: rgba(0, 0, 0, 0.2);
+		background: rgba(0, 0, 0, 0.8);
 		position: absolute;
 		top: 60px;
 		left: 0;
@@ -146,17 +142,21 @@ nav ul li a:hover {
 	.menu-toggle {
 		display: block;
 	}
+	.user-menu * {
+		font-size: 0.9rem;
+	}
 }
 </style>
 </head>
 <body>
 	<div class="header <%="header-" + category%>">
-		<!-- 홈 버튼 -->
-		<div class="menu-toggle" onclick="toggleMenu()">
-			<i class="fa-solid fa-bars"></i>
-		</div>
+
 		<nav>
 			<ul id="nav-links">
+				<!-- 홈 버튼 -->
+				<li class="menu-toggle" onclick="toggleMenu()"><i
+					class="fa-solid fa-bars"></i></li>
+
 				<li><a href="<%=request.getContextPath()%>/"><i
 						class="fa-solid fa-house"></i> 홈</a></li>
 				<li><a
@@ -183,7 +183,7 @@ nav ul li a:hover {
 			%>
 			<div class="user-info">
 				<i class="fa-solid fa-user"></i>
-				<%=userId%>
+				<%=session.getAttribute("userName")%>
 				회원님
 			</div>
 			<a href="<%=request.getContextPath()%>/sign/UpdateForm.do"><i
@@ -198,8 +198,22 @@ nav ul li a:hover {
 
 	<script>
 		function toggleMenu() {
-			document.getElementById("nav-links").classList.toggle("show");
+			const nav = document.getElementById("nav-links");
+			const toggleIcon = document.querySelector(".menu-toggle i");
+
+			nav.classList.toggle("show");
+
+			if (nav.classList.contains("show")) {
+				// 메뉴가 열렸을 때 → X 아이콘
+				toggleIcon.classList.remove("fa-bars");
+				toggleIcon.classList.add("fa-xmark");
+			} else {
+				// 메뉴가 닫혔을 때 → 햄버거 아이콘
+				toggleIcon.classList.remove("fa-xmark");
+				toggleIcon.classList.add("fa-bars");
+			}
 		}
 	</script>
+
 </body>
 </html>

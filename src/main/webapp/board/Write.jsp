@@ -220,7 +220,7 @@ body {
 	<h2 class="write-title <%=category%>">글쓰기(Write)</h2>
 
 	<form name="writeFrm" method="post" enctype="multipart/form-data"
-		action="./Write.do?" onsubmit="return validateForm(this);"
+		action="./Write.do" onsubmit="return validateForm(this);"
 		class="write-form">
 		<table class="write-table">
 			<tr>
@@ -232,7 +232,7 @@ body {
 						<option value="qna" <%="qna".equals(category) ? "selected" : ""%>>QnA게시판</option>
 						<option value="data"
 							<%="data".equals(category) ? "selected" : ""%>>자료게시판</option>
-				</select> </select></td>
+				</select></td>
 
 			</tr>
 			<tr>

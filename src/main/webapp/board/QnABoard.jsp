@@ -42,8 +42,12 @@ String category = request.getParameter("category") == null ? "free" : request.ge
 					<tr>
 						<td>${map.totalCount - (((map.pageNum-1) * map.pageSize) + loop.index)}</td>
 						<td align="left"><a
-							href="./View.do?category=${row.category}&pNum=${row.pNum}">${row.title}</a>
-						</td>
+							href="./View.do?category=${row.category}&pNum=${row.pNum}">${row.title}
+								<c:if test="${row.commentsCount > 0}">
+									<span class="comments-count">${row.commentsCount}</span>
+								</c:if>
+
+						</a></td>
 						<td>${row.name}</td>
 						<td>${row.visitCount}</td>
 						<td>${row.postDate}</td>
@@ -69,6 +73,7 @@ String category = request.getParameter("category") == null ? "free" : request.ge
 			</c:otherwise>
 		</c:choose>
 	</table>
+
 
 	<!-- 하단 메뉴 -->
 	<div class="bottom-menu">
