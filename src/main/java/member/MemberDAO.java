@@ -133,4 +133,34 @@ public class MemberDAO extends JDBConnect {
 		return result;
 	}
 
+	public boolean isEmailExists(String email, String userId) {
+		boolean exists = false;
+		String query = "SELECT COUNT(*) FROM member WHERE email=? AND id=?";
+		try {
+			psmt = con.prepareStatement(query);
+			psmt.setString(1, email);
+			psmt.setString(2, userId);
+			rs = psmt.executeQuery();
+			if (rs.next() && rs.getInt(1) > 0) {
+				exists = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return exists;
+	}
+
+	public int updatePasswordByEmail(String email, String newPassword) {
+		int result = 0;
+		String query = "UPDATE member SET password=? WHERE email=?";
+		try {
+			psmt = con.prepareStatement(query);
+			psmt.setString(1, newPassword);
+			psmt.setString(2, email);
+			result = psmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 }

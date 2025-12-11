@@ -151,7 +151,9 @@ h2 {
 			<input type="submit" class="login-btn" value="로그인하기" />
 
 			<div class="extra-actions">
-				<button type="button" onclick="history.back()">뒤로가기</button>
+				<button type="button" onclick="location.href='./LoginForm.jsp">뒤로가기</button>
+				<button type="button"
+					onclick="location.href='../Common/SendEmail.jsp'">비밀번호 찾기</button>
 				<button type="button" onclick="location.href='./SignupForm.jsp'">회원가입</button>
 			</div>
 		</form>

@@ -1,6 +1,5 @@
 package board;
 
-import java.io.File;
 import java.io.IOException;
 
 import fileupload.FileUtil;
@@ -49,7 +48,6 @@ public class EditController extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 로그인 확인
 		HttpSession session = req.getSession();
-
 		String userId = (String) session.getAttribute("userId");
 		/*
 		 * session 영역에 회원인증에 관련된 속성이 없다면 로그아웃 상태이므로 로그인 페이지로 이동

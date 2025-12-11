@@ -12,64 +12,57 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import utils.JSFunction;
 
-@WebServlet("/comments/Write.do")
-//폼데이터 받기 위해 설정
+@WebServlet("/comments/Edit.do")
+//폼데이터 보낼 시 설정해야 함
 @MultipartConfig
-public class WriteController extends HttpServlet {
+public class EditController extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
 		// 로그인 확인
 		HttpSession session = req.getSession();
 		String userId = (String) session.getAttribute("userId");
 		String userName = (String) session.getAttribute("userName");
 
-		resp.setContentType("application/json; charset=UTF-8");
-
 		if (userId == null) {
 			JSFunction.alertLocation(resp, "로그인 후 이용해주세요", "../sign/LoginForm.jsp");
 		}
 
-		// 폼값을 DTO에 저장
+		// DTO에 저장
 		CommentsDTO dto = new CommentsDTO();
 
+		String cNum = req.getParameter("cNum");
+
+		System.out.println("수정 요청받음, 수정할 댓글 번호:" + cNum);
+
 		String content = req.getParameter("content");
-		String pNum = req.getParameter("pNum");
 
 		dto.setId(userId);
+		dto.setcNum(cNum);
 		dto.setContent(content);
-		dto.setpNum(pNum);
 
-		// DAO를 통해 DB에 댓글 내용 저장
-
+		// DAO를 통해 DB에 댓글 내용 수정
 		CommentsDAO dao = new CommentsDAO();
-		int result = dao.insertWrite(dto);
+		int result = dao.updateComment(dto);
 
-		
-		//JSON 문자열을 작성하여 클라이언트로 응답을 보냄.
 		PrintWriter out = resp.getWriter();
 
 		if (result == 1) { // 댓글 쓰기 성공
-			// 방금 등록한 댓글의 작성일 가져오기
+			// 댓글의 작성일 가져오기
 			String regidate = dao.getRegidate(dto.getId(), dto.getpNum());
 
-			// DB에 저장된 작성자 이름, 작성일 등을 dto에 채워 JSON으로 응답
+			// DB에 저장된 작성자 이름, 작성일 등을 dto에 채워 json으로 보내기
 			out.print("{\"success\":true," + "\"comment\":{" + "\"id\":\"" + dto.getId() + "\"," + "\"name\":\""
 					+ userName + "\"," + "\"content\":\"" + dto.getContent() + "\"," + "\"regidate\":\"" + regidate
 					+ "\"" + "}}");
 		} else { // 실패
-			// 실패 메시지를 JSON으로 응답
-			out.print("{\"success\":false, \"message\":\"댓글 등록 실패\"}");
+			out.print("{\"success\":false, \"message\":\"댓글 수정 실패\"}");
 		}
 
 		// PrintWriter의 버퍼에 남아있는 데이터를 실제로 클라이언트로 전송
 		out.flush();
-
-		// DAO 자원 해제
 		dao.close();
-
 	}
 }

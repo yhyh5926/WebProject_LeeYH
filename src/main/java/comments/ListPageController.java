@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.BoardPage;
 
 @WebServlet("/comments/List.do")
 public class ListPageController extends HttpServlet {
@@ -22,22 +23,25 @@ public class ListPageController extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 
+		/* 페이지 처리 start */
 		ServletContext application = getServletContext();
 		int pageSize = Integer.parseInt(application.getInitParameter("POSTS_PER_PAGE"));
-		int page = 1;
+		int blockPage = Integer.parseInt(application.getInitParameter("PAGES_PER_BLOCK"));
 
-		// 페이지 번호 파라미터 처리
-		if (req.getParameter("page") != null) {
-			page = Integer.parseInt(req.getParameter("page"));
-		}
+		int pageNum = 1;
+		String pageTemp = req.getParameter("pageNum");
+		if (pageTemp != null && !pageTemp.equals(""))
+			pageNum = Integer.parseInt(pageTemp);
 
-		int start = (page - 1) * pageSize + 1;
-		int end = page * pageSize;
+		int start = (pageNum - 1) * pageSize + 1;
+		int end = pageNum * pageSize;
+		map.put("start", start);
+		map.put("end", end);
+		/* 페이지 처리 end */
+
 		String pNum = req.getParameter("pNum");
 
 		map.put("pNum", pNum);
-		map.put("start", start);
-		map.put("end", end);
 
 		CommentsDAO dao = new CommentsDAO();
 		List<CommentsDTO> commentsList = dao.selectListPage(map);
@@ -52,16 +56,18 @@ public class ListPageController extends HttpServlet {
 		StringBuilder json = new StringBuilder();
 		json.append("{\"success\":true,");
 		json.append("\"totalCount\":").append(totalCount).append(",");
-		json.append("\"page\":").append(page).append(",");
+		json.append("\"page\":").append(pageNum).append(",");
 		json.append("\"pageSize\":").append(pageSize).append(",");
 		json.append("\"comments\":[");
 
 		for (int i = 0; i < commentsList.size(); i++) {
 			CommentsDTO dto = commentsList.get(i);
 			// JSON 깨짐 방지: 따옴표/줄바꿈 이스케이프
-			String safeContent = dto.getContent().replace("\"", "\\\"").replace("\n", "\\n");
+			String safeContent = dto.getContent().replace("\\", "\\\\") // 역슬래시 먼저 처리
+					.replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
+					.replace("\b", "\\b").replace("\f", "\\f");
 
-			json.append("{").append("\"cnum\":\"").append(dto.getcNum()).append("\",").append("\"id\":\"")
+			json.append("{").append("\"cNum\":\"").append(dto.getcNum()).append("\",").append("\"id\":\"")
 					.append(dto.getId()).append("\",").append("\"name\":\"").append(dto.getName()).append("\",")
 					.append("\"content\":\"").append(safeContent).append("\",").append("\"regidate\":\"")
 					.append(dto.getRegidate()).append("\"").append("}");
@@ -69,7 +75,16 @@ public class ListPageController extends HttpServlet {
 				json.append(",");
 		}
 
-		json.append("]}");
+		json.append("],");
+
+		// 페이지 버튼 추가
+		String category = req.getParameter("category");
+		String baseUrl = "/board/View.do?category=" + category + "&pNum=" + pNum;
+		String pagingImg = BoardPage.pagingStr(totalCount, pageSize, blockPage, pageNum,
+				req.getContextPath() + baseUrl);
+
+		json.append("\"pagingImg\":\"").append(pagingImg.replace("\"", "\\\"")).append("\"}");
+
 		out.print(json.toString());
 		out.flush();
 

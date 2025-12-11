@@ -42,12 +42,17 @@ public class DeleteController extends HttpServlet {
 		int result = dao.deletePost(pNum);
 
 		dao.close();
+
+		String url = req.getContextPath() + "/board/Board.do?category=" + req.getParameter("category");
+
 		if (result == 1) {
 			String saveFileName = dto.getSfile();
 			FileUtil.deleteFile(req, "/Uploads", saveFileName);
+			JSFunction.alertLocation(resp, "삭제되었습니다.", url);
+		} else {
+			JSFunction.alertLocation(resp, "삭제에 실패했습니다.", url);
 		}
-		String url = req.getContextPath() + "/board/Board.do?category=" + req.getParameter("category");
-		JSFunction.alertLocation(resp, "삭제되었습니다.", url);
+
 	}
 
 }

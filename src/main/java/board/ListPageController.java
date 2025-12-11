@@ -66,6 +66,7 @@ public class ListPageController extends HttpServlet {
 
 		dao.close();
 
+		//페이지 버튼 
 		String baseUrl = "/board/Board.do?category=" + category;
 		String pagingImg = BoardPage.pagingStr(totalCount, pageSize, blockPage, pageNum,
 				req.getContextPath() + baseUrl);

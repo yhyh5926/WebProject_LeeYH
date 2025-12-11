@@ -243,7 +243,8 @@ body {
 				<td>내용</td>
 				<td><textarea name="content"></textarea></td>
 			</tr>
-			<tr class="file-row" style="display: none">
+			<tr class="file-row"
+				style="<%=category.equals("data") ? "display: table-row" : "display: none"%>">
 				<td>첨부 파일</td>
 				<td><input type="file" name="ofile" id="ofile" accept="image/*" />
 					<br /> <!-- 미리보기 영역 --> <img id="preview" src="" alt="이미지 미리보기"

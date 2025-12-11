@@ -85,6 +85,7 @@ nav ul li a {
 nav ul li a:hover {
 	background: rgba(255, 255, 255, 0.2);
 	transform: translateY(-2px);
+	text-decoration: none;
 }
 
 /* 사용자 메뉴 */
@@ -143,19 +144,20 @@ nav ul li a:hover {
 		display: block;
 	}
 	.user-menu * {
-		font-size: 0.9rem;
+		font-size: 0.8rem;
 	}
 }
 </style>
 </head>
 <body>
 	<div class="header <%="header-" + category%>">
-
+		<!-- 홈 버튼 -->
+		<div class="menu-toggle" onclick="toggleMenu()">
+			<i class="fa-solid fa-bars"></i>
+		</div>
 		<nav>
 			<ul id="nav-links">
-				<!-- 홈 버튼 -->
-				<li class="menu-toggle" onclick="toggleMenu()"><i
-					class="fa-solid fa-bars"></i></li>
+
 
 				<li><a href="<%=request.getContextPath()%>/"><i
 						class="fa-solid fa-house"></i> 홈</a></li>

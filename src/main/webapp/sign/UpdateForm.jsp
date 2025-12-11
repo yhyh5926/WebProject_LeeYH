@@ -174,25 +174,26 @@ h2 {
 
 			<div class="input-group">
 				<label for="userName">이름</label> <input type="text" name="userName"
-					id="userName" value="<%=member.getName()%>">
+					id="userName" value="<%=member.getName()%>" required>
 			</div>
 
 			<div class="input-group">
 				<label for="userPwd">새 비밀번호</label> <input type="password"
-					name="userPwd" id="userPwd">
+					name="userPwd" id="userPwd" required>
 			</div>
 
 			<div class="input-group">
 				<label for="userPwdConfirm">비밀번호 확인</label> <input type="password"
-					name="userPwdConfirm" id="userPwdConfirm">
+					name="userPwdConfirm" id="userPwdConfirm" required>
 			</div>
 
 			<!-- 이메일 -->
 			<div class="input-group">
 				<label for="userEmail">이메일</label>
 				<div class="email-group">
-					<input type="text" name="emailId" id="emailId" value="<%=emailId%>">
-					<span>@</span> <select name="emailDomain" id="emailDomain">
+					<input type="text" name="emailId" id="emailId" value="<%=emailId%>"
+						required> <span>@</span> <select name="emailDomain"
+						id="emailDomain">
 						<option value="naver.com"
 							<%="naver.com".equals(emailDomain) ? "selected" : ""%>>naver.com</option>
 						<option value="gmail.com"
@@ -211,10 +212,10 @@ h2 {
 				<label for="userPhone">전화번호</label>
 				<div class="phone-group">
 					<input type="text" name="phone1" id="phone1" maxlength="3"
-						value="<%=phone1%>"> <input type="text" name="phone2"
-						id="phone2" maxlength="4" value="<%=phone2%>"> <input
-						type="text" name="phone3" id="phone3" maxlength="4"
-						value="<%=phone3%>">
+						value="<%=phone1%>" required> <input type="text"
+						name="phone2" id="phone2" maxlength="4" value="<%=phone2%>"
+						required> <input type="text" name="phone3" id="phone3"
+						maxlength="4" value="<%=phone3%>" required>
 				</div>
 			</div>
 
@@ -227,6 +228,7 @@ h2 {
 	</div>
 
 	<script>
+		// 이메일 도메인 처리
 		document
 				.getElementById("emailDomain")
 				.addEventListener(
@@ -238,6 +240,22 @@ h2 {
 								document.getElementById("emailCustom").style.display = "none";
 							}
 						});
+
+		// 비밀번호 확인 체크
+		document.querySelector(".update-form").addEventListener(
+				"submit",
+				function(e) {
+					const pwd = document.getElementById("userPwd").value;
+					const pwdConfirm = document
+							.getElementById("userPwdConfirm").value;
+
+					if (pwd !== pwdConfirm) {
+						e.preventDefault(); // 폼 제출 막기
+						alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+						document.getElementById("userPwdConfirm").focus();
+					}
+				});
 	</script>
+
 </body>
 </html>

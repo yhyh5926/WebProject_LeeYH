@@ -174,6 +174,8 @@ function checkDuplicateId() {
         })
         .catch(err => console.error(err));
 }
+
+
 </script>
 </head>
 <body>
@@ -188,7 +190,7 @@ function checkDuplicateId() {
 			<div class="input-group">
 				<label for="userId">아이디</label>
 				<div style="display: flex; gap: 6px;">
-					<input type="text" name="userId" id="userId">
+					<input type="text" name="userId" id="userId" required>
 					<button type="button" onclick="checkDuplicateId()">중복확인</button>
 				</div>
 				<span id="idCheckMsg" style="font-size: 13px; color: crimson;"></span>
@@ -196,24 +198,25 @@ function checkDuplicateId() {
 
 			<div class="input-group">
 				<label for="userName">이름</label> <input type="text" name="userName"
-					id="userName">
+					id="userName" required>
 			</div>
 
 			<div class="input-group">
 				<label for="userPwd">비밀번호</label> <input type="password"
-					name="userPwd" id="userPwd">
+					name="userPwd" id="userPwd" required>
 			</div>
 
 			<div class="input-group">
 				<label for="userPwdConfirm">비밀번호 확인</label> <input type="password"
-					name="userPwdConfirm" id="userPwdConfirm">
+					name="userPwdConfirm" id="userPwdConfirm" required>
 			</div>
 
 			<div class="input-group">
 				<label for="userEmail">이메일</label>
 				<div class="email-group">
-					<input type="text" name="emailId" id="emailId" placeholder="이메일 입력">
-					<span>@</span> <select name="emailDomain" id="emailDomain">
+					<input type="text" name="emailId" id="emailId" placeholder="이메일 입력"
+						required> <span>@</span> <select name="emailDomain"
+						id="emailDomain">
 						<option value="naver.com">naver.com</option>
 						<option value="gmail.com">gmail.com</option>
 						<option value="daum.net">daum.net</option>
@@ -228,10 +231,10 @@ function checkDuplicateId() {
 				<label for="userPhone">전화번호</label>
 				<div class="phone-group">
 					<input type="text" name="phone1" id="phone1" maxlength="3"
-						placeholder="010"> <input type="text" name="phone2"
-						id="phone2" maxlength="4" placeholder="1234"> <input
-						type="text" name="phone3" id="phone3" maxlength="4"
-						placeholder="5678">
+						placeholder="010" required> <input type="text"
+						name="phone2" id="phone2" maxlength="4" placeholder="1234"
+						required> <input type="text" name="phone3" id="phone3"
+						maxlength="4" placeholder="5678" required>
 				</div>
 			</div>
 
@@ -245,17 +248,27 @@ function checkDuplicateId() {
 	</div>
 
 	<script>
-		document
-				.getElementById("emailDomain")
-				.addEventListener(
-						"change",
-						function() {
-							if (this.value === "직접입력") {
-								document.getElementById("emailCustom").style.display = "block";
-							} else {
-								document.getElementById("emailCustom").style.display = "none";
-							}
-						});
+	// 이메일 도메인 처리
+    document.getElementById("emailDomain").addEventListener("change", function() {
+        if (this.value === "직접입력") {
+            document.getElementById("emailCustom").style.display = "block";
+        } else {
+            document.getElementById("emailCustom").style.display = "none";
+        }
+    });
+
+    // 비밀번호 확인 체크
+    document.querySelector(".signup-form").addEventListener("submit", function(e) {
+        const pwd = document.getElementById("userPwd").value;
+        const pwdConfirm = document.getElementById("userPwdConfirm").value;
+
+        if (pwd !== pwdConfirm) {
+            e.preventDefault(); // 폼 제출 막기
+            alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            document.getElementById("userPwdConfirm").focus();
+        }
+    });
+
 	</script>
 </body>
 </html>
