@@ -130,7 +130,7 @@ to {
 	<div class="container">
 		<h1>임시 비밀번호 전송</h1>
 		<form method="post" action="SendProcess.jsp" accept-charset="UTF-8">
-			<input type="email" id="from" name="from" value="yhyh5926@naver.com"
+			<input type="email" id="from" name="from" value="yh9035926@naver.com"
 				hidden /> <label for="userId">찾을 아이디</label> <input type="text"
 				id="userId" name="userId" required /> <label for="to">등록한
 				이메일 주소</label> <input type="email" id="to" name="to"
