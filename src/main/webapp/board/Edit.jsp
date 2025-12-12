@@ -199,12 +199,17 @@ body {
 			<tr class="file-row"
 				style="${dto.category eq 'data' ? '' : 'display:none'}">
 				<td>첨부 파일</td>
-				<td><input type="file" name="ofile" id="ofile" accept="image/*" />
+				<td>
+					<input type="file" name="ofile" id="ofile" accept="image/*" />
+					<!-- 기존 파일명 hidden으로 전달 --> 
+					<input type="hidden" name="prevOfile" value="${dto.ofile}" /> 
+					<input type="hidden" name="prevSfile" value="${dto.sfile}" /> 
 					<c:if test="${not empty dto.ofile}">
 						<p>현재 첨부: ${dto.ofile}</p>
 						<img id="preview" src="../Uploads/${dto.sfile}" alt="첨부 이미지"
 							style="max-width: 200px; margin-top: 10px;" />
-					</c:if> <c:if test="${empty dto.ofile}">
+					</c:if> 
+					<c:if test="${empty dto.ofile}">
 						<img id="preview" src="" alt="이미지 미리보기"
 							style="max-width: 200px; margin-top: 10px; display: none;" />
 					</c:if></td>

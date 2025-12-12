@@ -83,6 +83,8 @@ public class EditController extends HttpServlet {
 		String title = req.getParameter("title");
 		String content = req.getParameter("content");
 
+		System.out.println(prevOfile);
+		System.out.println(prevSfile+content);
 		// DTO에 저장
 		BoardDTO dto = new BoardDTO();
 		dto.setpNum(pNum);
@@ -91,7 +93,7 @@ public class EditController extends HttpServlet {
 		dto.setContent(content);
 
 		// 원본 파일명과 저장된 파일 이름 설정
-		if (originalFileName != "") {
+		if (originalFileName != null && !originalFileName.isEmpty()) {
 			// 파일명 변경
 			String savedFileName = FileUtil.renameFile(saveDirectory, originalFileName);
 
@@ -101,7 +103,9 @@ public class EditController extends HttpServlet {
 			// 기존 파일 삭제
 			FileUtil.deleteFile(req, "/Uploads", prevSfile);
 		} else {
+			System.out.println("첨부파일 없으므로 기존 파일 유지");
 			// 첨부 파일이 없으면 기존 이름 유지
+			
 			dto.setOfile(prevOfile);
 			dto.setSfile(prevSfile);
 		}

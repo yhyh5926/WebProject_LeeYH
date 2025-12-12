@@ -58,6 +58,7 @@ public class WriteController extends HttpServlet {
 		// 업로드 디렉터리의 물리적 경로 확인
 		String saveDirectory = req.getServletContext().getRealPath("/Uploads");
 
+		System.out.println(saveDirectory);
 		// 파일 업로드
 		String originalFileName = "";
 		try {
