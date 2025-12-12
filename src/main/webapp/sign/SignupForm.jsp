@@ -215,8 +215,8 @@ function checkDuplicateId() {
 				<label for="userEmail">이메일</label>
 				<div class="email-group">
 					<input type="text" name="emailId" id="emailId" placeholder="이메일 입력"
-						required> <span>@</span> <select name="emailDomain"
-						id="emailDomain">
+						required> <span>@</span> 
+					<select name="emailDomain" id="emailDomain">
 						<option value="naver.com">naver.com</option>
 						<option value="gmail.com">gmail.com</option>
 						<option value="daum.net">daum.net</option>

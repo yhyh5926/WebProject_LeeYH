@@ -111,6 +111,9 @@ textarea:focus {
 
 <body>
 	<!-- 댓글 작성 폼 -->
+	<%
+	if (session.getAttribute("userId") != null) {
+	%>
 	<form id="commentForm">
 		<input type="hidden" name="category" value="${dto.category}">
 		<input type="hidden" name="pNum" value="${dto.pNum}">
@@ -120,6 +123,9 @@ textarea:focus {
 			<button type="reset">RESET</button>
 		</div>
 	</form>
+	<%
+	}
+	%>
 
 </body>
 
