@@ -35,11 +35,15 @@ public class NaverSMTP {
 		serverInfo.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		serverInfo.put("mail.smtp.socketFactory.fallback", "false");
 
+		
 		// 사용자 인증 정보
+		String smtpUser = System.getenv("NAVER_SMTP_USER");
+		String smtpPassword = System.getenv("NAVER_SMTP_PASSWORD");
+
 		auth = new Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication("yh9035926", "1KB3GMKZUUVT");
+				return new PasswordAuthentication(smtpUser, smtpPassword);
 			}
 		};
 	}
